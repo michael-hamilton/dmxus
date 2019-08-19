@@ -5,6 +5,7 @@
       "intensity"
     ]
   },
+
   "IRGB": {
     "description": "4 channel rgb fixture with intensity",
     "parameters": [
@@ -12,6 +13,80 @@
       "red",
       "green",
       "blue"
+    ]
+  },
+
+  "IRGBA": {
+    "description": "5 channel rgba fixture with intensity",
+    "parameters": [
+      "intensity",
+      "red",
+      "green",
+      "blue",
+      "amber"
+    ]
+  },
+
+  "IRGBAW": {
+    "description": "6 channel rgbaw fixture with intensity",
+    "parameters": [
+      "intensity",
+      "red",
+      "green",
+      "blue",
+      "amber",
+      "white"
+    ]
+  },
+
+  "IRGBW": {
+    "description": "5 channel rgbw fixture with intensity",
+    "parameters": [
+      "intensity",
+      "red",
+      "green",
+      "blue",
+      "white"
+    ]
+  },
+
+  "RGB": {
+    "description": "3 channel rgb fixture",
+    "parameters": [
+      "red",
+      "green",
+      "blue"
+    ]
+  },
+
+  "RGBA": {
+    "description": "4 channel rgba fixture",
+    "parameters": [
+      "red",
+      "green",
+      "blue",
+      "amber"
+    ]
+  },
+
+  "RGBAW": {
+    "description": "5 channel rgbaw fixture",
+    "parameters": [
+      "red",
+      "green",
+      "blue",
+      "amber",
+      "white"
+    ]
+  },
+
+  "RGBW": {
+    "description": "4 channel rgbw fixture",
+    "parameters": [
+      "red",
+      "green",
+      "blue",
+      "white"
     ]
   }
 }

@@ -1,12 +1,13 @@
 // Example usage of dmxus
 
+// Require the module
 const dmxus = require('./index');
-const profiles = require('./profiles');
 
-// Keys are fixture start address, value is a device profile object
-const fixtures = {
-  1: profiles.IRGB
-};
+// Create an instance of dmxus with the correct port
+const d = new dmxus('COM6');
+
+// Patch a fixture
+d.patchFixture( 1, dmxus.getDeviceProfile("IRGB"));
 
 // Keys are a standardized parameter name, value is a hex value (0 - 255)
 const parameters = {
@@ -16,6 +17,5 @@ const parameters = {
   "blue": 255
 };
 
-const d = new dmxus('COM6');
-
-d.updateFixtures(fixtures, parameters);
+// Update the all the fixtures in the universe with the provided parameters
+d.updateAllFixtures(parameters);
