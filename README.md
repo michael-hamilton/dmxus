@@ -21,7 +21,7 @@ const dmxus = require('dmxus');
 const d = new dmxus('COM6');
 ```
 
-Patch fixtures using the `patchFixture()` method. The first parameter is the start address of the fixture to be patch, and the second is a fixture profile object (see appendix for the shape of this object). dmxus also includes a utility method `getDeviceProfile()` for retrieving preexisting fixture profiles.
+Patch fixtures using the `patchFixture()` method. The first parameter is the start address of the fixture to be patched, and the second is a fixture profile object (see appendix for the shape of this object). dmxus also includes a utility method `getDeviceProfile()` for retrieving preexisting fixture profiles.
 ```
 d.patchFixture( 1, dmxus.getDeviceProfile("IRGB"));
 ```
