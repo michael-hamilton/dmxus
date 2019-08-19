@@ -26,7 +26,7 @@ Patch fixtures using the `patchFixture()` method. The first parameter is the sta
 d.patchFixture( 1, dmxus.getDeviceProfile("IRGB"));
 ```
 
-To update all of the devices in the DMX universe, call the `updateAllFixtures()` method passing in a patch object, and an update object.  Object keys are the parameter name to control (see appendix for standardized parameter names), and values are a hex value (0 - 255).
+To update all of the devices in the DMX universe, call the `updateAllFixtures()` method passing in an object with device parameters to update.  Object keys are the parameter name to control (see appendix for standardized parameter names), and values are a hex value (0 - 255).
 ```
 const parameters = {
     "intensity": 255,
@@ -35,7 +35,7 @@ const parameters = {
     "blue": 255
 };
 
-d.updateFixtures(fixtures, parameters);
+d.updateFixtures(parameters);
 ```  
 
 
