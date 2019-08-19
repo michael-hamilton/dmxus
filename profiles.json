@@ -1,0 +1,17 @@
+{
+  "Dimmer": {
+    "description": "A single channel for intensity control",
+    "parameters": [
+      "intensity"
+    ]
+  },
+  "IRGB": {
+    "description": "4 channel rgb fixture with intensity",
+    "parameters": [
+      "intensity",
+      "red",
+      "green",
+      "blue"
+    ]
+  }
+}
