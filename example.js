@@ -11,7 +11,7 @@ d.patchFixture( 1, dmxus.getDeviceProfile("IRGB"));
 
 // Keys are a standardized parameter name, value is a hex value (0 - 255)
 const parameters = {
-  "intensity": 255,
+  "intensity": 10,
   "red": 255,
   "green": 255,
   "blue": 255

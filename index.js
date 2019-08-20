@@ -1,6 +1,6 @@
 // The main dmxus class
 
-const Driver = require('./lib/driver');
+const Driver = require('./drivers')('enttec-dmx-usb-pro');
 const profiles = require('./profiles');
 
 class DMXUS {
@@ -27,6 +27,16 @@ class DMXUS {
     });
 
     this.driver.send(this.universe);
+  }
+
+
+  getPatch() {
+    return this.patch;
+  }
+
+
+  setPatch(patch) {
+    this.patch = patch;
   }
 
 

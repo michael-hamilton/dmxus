@@ -2,19 +2,19 @@
 
 const SerialPort = require('serialport');
 
-class Driver {
+class EnttecDmxUsbProDriver {
 
   constructor(port) {
     this.port = new SerialPort(port,  {
       'baudRate': 250000,
       'dataBits': 8,
       'stopBits': 2,
-      'parity': 'none',
+      'parity': 'none'
     });
   }
 
-  send(universe){
 
+  send(universe){
     const header = Buffer.from([
       0x7e,
       0x06,
@@ -31,6 +31,7 @@ class Driver {
 
     this.port.write(data);
   }
+
 }
 
-module.exports = Driver;
+module.exports = EnttecDmxUsbProDriver;
