@@ -1,8 +1,7 @@
 # dmxus
 
-A high level Javascript library for controlling lighting fixtures via DMX. The aim of dmxus is to provide a friendly API with conventions that feel similar to working directly on a lighting console.
+dmxus is a high level Javascript library for controlling lighting fixtures via DMX. The aim of dmxus is to provide a friendly API with conventions that feel similar to working directly on a lighting console.
 
-At the moment, only the Enttec DMX USB Pro interface is supported.
 
 
 ## Installation
@@ -11,22 +10,38 @@ At the moment, only the Enttec DMX USB Pro interface is supported.
 npm install dmxus --save
 ```
 
+dmxus works on Windows, Mac, and Linux and should be compatible with all active/LTS versions of NodeJS.
+
+
 
 ## Usage
 
-Require the library as you would any node module. Instantiate the class by passing in the name or path of the port for the DMX interface.  Each instance of dmxus is capable of controlling a single 512 channel DMX universe.
+Require the library as you would any node module. Instantiate the class by passing in the name of the driver to use, and the name or path of the port of the DMX interface.  Each instance of dmxus is capable of controlling a single 512 channel DMX universe.
 ```
-const dmxus = require('dmxus');
+const dmxus = require("dmxus");
 
-const d = new dmxus('COM6');
+const d = new dmxus("enttec-dmx-usb-pro", "COM6");
 ```
+At the moment, only the Enttec DMX USB Pro interface is supported.
+
+
+#### Patching and Grouping
 
 Patch fixtures using the `patchFixture()` method. The first parameter is the start address of the fixture to be patched, and the second is a fixture profile object (see appendix for the shape of this object). dmxus also includes a utility method `getDeviceProfile()` for retrieving preexisting fixture profiles.
 ```
-d.patchFixture( 1, dmxus.getDeviceProfile("IRGB"));
+d.patchFixture(1, dmxus.getDeviceProfile("IRGB"));
 ```
 
-To update all of the devices in the DMX universe, call the `updateAllFixtures()` method passing in an object with device parameters to update.  Object keys are the parameter name to control (see appendix for standardized parameter names), and values are a hex value (0 - 255).
+
+Fixtures can be grouped using the `addFixtureToGroup()` method. Pass in a group name and the starting address of the fixture to add the fixture to the group.
+```
+d.addFixtureToGroup("group", 1);
+```
+
+
+#### Updating Fixtures
+
+dmxus provides a few methods for updating fixtures.  All methods for updating fixtures expect a parameters object that defines what fixture parameters should update. The object's keys are the parameter name to control (see appendix for standardized parameter names), and values are a hex value (0 - 255).
 ```
 const parameters = {
     "intensity": 255,
@@ -34,9 +49,21 @@ const parameters = {
     "green": 255,
     "blue": 255
 };
+```
+  
+\
+To update a single fixture, call the `updateSingleFixture()` method, passing in the fixture start address and parameters to update on the fixture.
 
-d.updateFixtures(parameters);
-```  
+To update all of the fixtures in a group, call the `updateAllFixturesInGroup()` method, passing in a group name and parameters to update on the fixtures in the group.
+
+To update all of the fixtures in the DMX universe, call the `updateAllFixtures()` method, passing in parameters to update on all of the fixtures.
+
+
+
+## Utilities
+
+dmxus provides a few utility functions that are useful for things like persisting patch data of a dmxus instance. Use the `getPatch()` method to retrieve the current patch configuration.  `setPatch()` accepts an object of the same shape as that returned from `getPatch()`, and sets the instances patch accordingly.
+
 
 
 ## Appendix
@@ -67,8 +94,10 @@ Parameter names are arbitrary, but the standardized names used within dmxus prof
 * white
 
 
+
 ## License
 Released under the MIT license. Do whatever you wish with it, just don't @ me.
+
 
 
 ## Acknowledgement
