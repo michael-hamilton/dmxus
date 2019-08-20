@@ -1,21 +1,21 @@
 // Example usage of dmxus
 
 // Require the module
-const dmxus = require('./index');
+const dmxus = require("./index");
 
 
 // Create an instance of dmxus with the correct port
-const d = new dmxus('COM6');
+const d = new dmxus("enttec-dmx-usb-pro", "COM6");
 
 
 // Patch some fixtures
-d.patchFixture( 1, dmxus.getDeviceProfile("IRGB"));
-d.patchFixture( 8, dmxus.getDeviceProfile("IRGB"));
+d.patchFixture(1, dmxus.getDeviceProfile("IRGB"));
+d.patchFixture(8, dmxus.getDeviceProfile("IRGB"));
 
 
 // Add fixtures to a group
-d.addFixtureToGroup('group', 1);
-d.addFixtureToGroup('group', 8);
+d.addFixtureToGroup("group", 1);
+d.addFixtureToGroup("group", 8);
 
 
 // Keys are a standardized parameter name, value is a hex value (0 - 255)
@@ -32,4 +32,4 @@ d.updateAllFixtures(parameters);
 
 
 // Update all the fixtures in the group with the provided parameters
-d.updateAllFixturesInGroup('group', parameters);
+d.updateAllFixturesInGroup("group", parameters);
