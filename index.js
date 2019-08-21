@@ -79,6 +79,12 @@ class DMXUS {
   }
 
 
+  // Returns the profile of the fixture patched at the provided start address
+  getPatchedFixtureProfile(startAddress) {
+    return this.patch[startAddress];
+  }
+
+
   // Calls the update method on the driver with the current state of the universe
   update() {
     this.driver.send(this.universe);
@@ -86,7 +92,7 @@ class DMXUS {
 
 
   // Returns the device profile of the provided profile name
-  static getDeviceProfile(profileName) {
+  static getFixtureProfile(profileName) {
     return profiles[profileName];
   }
 

@@ -13,7 +13,7 @@ class EnttecDmxUsbProDriver {
     });
   }
 
-
+  // Accepts a universe buffer and writes the data to the device
   send(universe){
     const header = Buffer.from([
       0x7e,

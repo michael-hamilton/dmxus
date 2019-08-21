@@ -9,8 +9,8 @@ const d = new dmxus("enttec-dmx-usb-pro", "COM6");
 
 
 // Patch some fixtures
-d.patchFixture(1, dmxus.getDeviceProfile("IRGB"));
-d.patchFixture(8, dmxus.getDeviceProfile("IRGB"));
+d.patchFixture(1, dmxus.getFixtureProfile("IRGB"));
+d.patchFixture(8, dmxus.getFixtureProfile("IRGB"));
 
 
 // Add fixtures to a group

@@ -8,7 +8,7 @@ const Driver = (driverName) => {
 
     default:
       console.log("No driver found");
-      break;
+      return false;
   }
 };
 

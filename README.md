@@ -27,9 +27,9 @@ At the moment, only the Enttec DMX USB Pro interface is supported.
 
 #### Patching and Grouping
 
-Patch fixtures using the `patchFixture()` method. The first parameter is the start address of the fixture to be patched, and the second is a fixture profile object (see appendix for the shape of this object). dmxus also includes a utility method `getDeviceProfile()` for retrieving preexisting fixture profiles.
+Patch fixtures using the `patchFixture()` method. The first parameter is the start address of the fixture to be patched, and the second is a fixture profile object (see appendix for the shape of this object). dmxus also includes a utility method `getFixtureProfile()` for retrieving preexisting fixture profiles.
 ```
-d.patchFixture(1, dmxus.getDeviceProfile("IRGB"));
+d.patchFixture(1, dmxus.getFixtureProfile("IRGB"));
 ```
 
 
@@ -62,7 +62,12 @@ To update all of the fixtures in the DMX universe, call the `updateAllFixtures()
 
 ## Utilities
 
-dmxus provides a few utility functions that are useful for things like persisting patch data of a dmxus instance. Use the `getPatch()` method to retrieve the current patch configuration.  `setPatch()` accepts an object of the same shape as that returned from `getPatch()`, and sets the instances patch accordingly.
+dmxus provides a few misc utility functions that are useful for things like persisting patch data of a dmxus instance or for retrieving device profiles.
+
+Use the `getPatch()` method to retrieve the current patch configuration.
+`setPatch()` accepts an object of the same shape as that returned from `getPatch()`, and sets the dmxus instance's patch accordingly.
+
+`getPatchedFixtureProfile()` accepts a start address and returns the profile of the fixture patched at that address.
 
 
 
