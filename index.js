@@ -10,6 +10,7 @@ class DMXUS {
     this.universe = Buffer.alloc(513, 0);
     this.patch = {};
     this.groups = {};
+    this.refreshRate = 25;
   }
 
 
@@ -56,10 +57,33 @@ class DMXUS {
 
 
   // Updates all fixtures in the provided group name with the provided parameters.
-  updateAllFixturesInGroup(groupName, parameters) {
+  updateAllFixturesInGroup(groupName, parameters, fadeIn = 0) {
+    const oldFixtureParameterValues = {};
+
     if(this.groups[groupName]) {
-      this.groups[groupName].forEach(fixtureAddress => {
-        this.updateSingleFixture(fixtureAddress, parameters);
+      let currentFrame = 0;
+      let targetFrames = parseInt(fadeIn/this.refreshRate);
+
+      targetFrames = targetFrames < 1 ? 1: targetFrames;
+
+        this.groups[groupName].forEach(fixtureAddress => {
+          oldFixtureParameterValues[fixtureAddress] = this.getFixtureValues(fixtureAddress);
+
+          const transitionInterval = setInterval(() => {
+            const nextUpdate = {};
+            Object.keys(parameters).forEach(parameter => {
+              const oldParamValue = oldFixtureParameterValues[fixtureAddress][parameter];
+              const targetParamValue = parameters[parameter];
+              nextUpdate[parameter] = Math.round(oldParamValue + (targetParamValue - oldParamValue) * (currentFrame/targetFrames));
+            });
+
+            this.updateSingleFixture(fixtureAddress, nextUpdate);
+
+            if(currentFrame === targetFrames) {
+              clearInterval(transitionInterval);
+            }
+            currentFrame++;
+          }, this.refreshRate);
       });
 
       this.update();
@@ -84,6 +108,20 @@ class DMXUS {
     return this.patch[startAddress];
   }
 
+
+  // Returns the parameter values of the fixture at the provided start address
+  getFixtureValues(startAddress) {
+    const fixtureParameterNames = this.getPatchedFixtureProfile(startAddress).parameters;
+    const fixtureParameterValues = {};
+    let parameterNameIndex = 0;
+
+    for(let address = startAddress; address <= fixtureParameterNames.length; address++) {
+      fixtureParameterValues[fixtureParameterNames[parameterNameIndex]] = this.universe[address];
+      parameterNameIndex++;
+    }
+
+    return fixtureParameterValues;
+  }
 
   // Calls the update method on the driver with the current state of the universe
   update() {

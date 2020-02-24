@@ -54,7 +54,7 @@ const parameters = {
 \
 To update a single fixture, call the `updateSingleFixture()` method, passing in the fixture start address and parameters to update on the fixture.
 
-To update all of the fixtures in a group, call the `updateAllFixturesInGroup()` method, passing in a group name and parameters to update on the fixtures in the group.
+To update all of the fixtures in a group, call the `updateAllFixturesInGroup()` method, passing in a group name and parameters to update on the fixtures in the group. This method accepts an optional third parameter for defining the number of milliseconds to fade into the new scene.
 
 To update all of the fixtures in the DMX universe, call the `updateAllFixtures()` method, passing in parameters to update on all of the fixtures.
 
