@@ -66,27 +66,29 @@ class DMXUS {
 
       targetFrames = targetFrames < 1 ? 1: targetFrames;
 
-        this.groups[groupName].forEach(fixtureAddress => {
-          oldFixtureParameterValues[fixtureAddress] = this.getFixtureValues(fixtureAddress);
+      this.groups[groupName].forEach(fixtureAddress => {
+        oldFixtureParameterValues[fixtureAddress] = this.getFixtureValues(fixtureAddress);
 
-          const transitionInterval = setInterval(() => {
-            const nextUpdate = {};
-            Object.keys(parameters).forEach(parameter => {
-              const oldParamValue = oldFixtureParameterValues[fixtureAddress][parameter];
-              const targetParamValue = parameters[parameter];
-              nextUpdate[parameter] = Math.round(oldParamValue + (targetParamValue - oldParamValue) * (currentFrame/targetFrames));
-            });
+        const transitionInterval = setInterval(() => {
+          const nextUpdate = {};
+          Object.keys(parameters).forEach(parameter => {
+            const oldParamValue = oldFixtureParameterValues[fixtureAddress][parameter];
+            const targetParamValue = parameters[parameter];
+            nextUpdate[parameter] = Math.round(oldParamValue + (targetParamValue - oldParamValue) * (currentFrame/targetFrames));
+          });
 
-            this.updateSingleFixture(fixtureAddress, nextUpdate);
+          this.updateSingleFixture(fixtureAddress, nextUpdate);
 
-            if(currentFrame === targetFrames) {
-              clearInterval(transitionInterval);
-            }
+          if(currentFrame === targetFrames) {
+            clearInterval(transitionInterval);
+            return true;
+          }
+          else {
             currentFrame++;
-          }, this.refreshRate);
-      });
+          }
 
-      this.update();
+        }, targetFrames/2);
+      });
     }
   }
 
@@ -115,8 +117,8 @@ class DMXUS {
     const fixtureParameterValues = {};
     let parameterNameIndex = 0;
 
-    for(let address = startAddress; address <= fixtureParameterNames.length; address++) {
-      fixtureParameterValues[fixtureParameterNames[parameterNameIndex]] = this.universe[address];
+    for(let address = 0; address <= fixtureParameterNames.length; address++) {
+      fixtureParameterValues[fixtureParameterNames[parameterNameIndex]] = this.universe[startAddress + address];
       parameterNameIndex++;
     }
 
