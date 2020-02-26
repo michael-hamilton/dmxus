@@ -61,10 +61,8 @@ class DMXUS {
     const oldFixtureParameterValues = {};
 
     if(this.groups[groupName]) {
-      let currentFrame = 0;
-      let targetFrames = parseInt(fadeIn/this.refreshRate);
-
-      targetFrames = targetFrames < 1 ? 1: targetFrames;
+      let updateCount = 0;
+      let targetUpdateCount = Math.round(fadeIn/this.refreshRate) || 1;
 
       this.groups[groupName].forEach(fixtureAddress => {
         oldFixtureParameterValues[fixtureAddress] = this.getFixtureValues(fixtureAddress);
@@ -74,20 +72,20 @@ class DMXUS {
           Object.keys(parameters).forEach(parameter => {
             const oldParamValue = oldFixtureParameterValues[fixtureAddress][parameter];
             const targetParamValue = parameters[parameter];
-            nextUpdate[parameter] = Math.round(oldParamValue + (targetParamValue - oldParamValue) * (currentFrame/targetFrames));
+            nextUpdate[parameter] = Math.round(oldParamValue + (targetParamValue - oldParamValue) * (updateCount/targetUpdateCount));
           });
 
           this.updateSingleFixture(fixtureAddress, nextUpdate);
 
-          if(currentFrame === targetFrames) {
+          if(updateCount === targetUpdateCount) {
             clearInterval(transitionInterval);
             return true;
           }
           else {
-            currentFrame++;
+            updateCount+=1;
           }
 
-        }, targetFrames/2);
+        }, targetUpdateCount/2);
       });
     }
   }
