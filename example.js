@@ -17,10 +17,9 @@ d.patchFixture(16, dmxus.getFixtureProfile("RGBW"));
 
 // Add fixtures to a group
 d.addFixtureToGroup("group", 1);
-d.addFixtureToGroup("group2", 6);
-d.addFixtureToGroup("group2", 11);
+d.addFixtureToGroup("group", 6);
+d.addFixtureToGroup("group", 11);
 d.addFixtureToGroup("group", 16);
-d.addFixtureToGroup("group3", 16);
 
 
 // Keys are a standardized parameter name, value is a hex value (0 - 255)
@@ -39,14 +38,15 @@ d.updateAllFixtures(initParameters);
 // Update all the fixtures in the group with the provided parameters
 d.updateAllFixturesInGroup("group", {
   "red": 0,
-  "green": 255,
-  "blue": 60,
+  "green": 0,
+  "blue": 50,
   "white": 0,
-}, 2000);
+}, 5000);
 
-d.updateAllFixturesInGroup("group2", {
-  "red": 0,
-  "green": 60,
-  "blue": 120,
+// Update all the fixtures in the group with the provided parameters
+d.updateAllFixturesInGroup("group", {
+  "red": 50,
+  "green": 0,
+  "blue": 0,
   "white": 0,
-}, 1000);
+}, 5000);
