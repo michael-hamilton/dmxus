@@ -63,31 +63,34 @@ class DMXUS {
 
     if(this.groups[groupName]) {
       let updateCount = 0;
-      let targetUpdateCount = Math.round(fadeIn/this.refreshRate) || 1;
+      const targetUpdateCount = Math.round(fadeIn/this.refreshRate) || 1;
+      const intervalTime = fadeIn/targetUpdateCount;
 
       clearInterval(this.timers[groupName]);
 
-      this.timers[groupName] = setInterval(() => {
       this.groups[groupName].forEach(fixtureAddress => {
         oldFixtureParameterValues[fixtureAddress] = this.getFixtureValues(fixtureAddress);
+      });
+
+      this.timers[groupName] = setInterval(() => {
+        this.groups[groupName].forEach(fixtureAddress => {
           const nextUpdate = {};
           Object.keys(parameters).forEach(parameter => {
             const oldParamValue = oldFixtureParameterValues[fixtureAddress][parameter];
             const targetParamValue = parameters[parameter];
             nextUpdate[parameter] = Math.round(oldParamValue + (targetParamValue - oldParamValue) * (updateCount/targetUpdateCount));
           });
-
           this.updateSingleFixture(fixtureAddress, nextUpdate);
-
-          if(updateCount === targetUpdateCount) {
-            clearInterval(this.timers[groupName]);
-            return true;
-          }
-          else {
-            updateCount+=1;
-          }
         });
-      }, targetUpdateCount/2);
+
+        if(updateCount === targetUpdateCount) {
+          clearInterval(this.timers[groupName]);
+          return true;
+        }
+        else {
+          updateCount+=1;
+        }
+      }, intervalTime);
     }
   }
 

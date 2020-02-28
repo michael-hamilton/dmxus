@@ -39,14 +39,6 @@ d.updateAllFixtures(initParameters);
 d.updateAllFixturesInGroup("group", {
   "red": 0,
   "green": 0,
-  "blue": 50,
+  "blue": 255,
   "white": 0,
-}, 5000);
-
-// Update all the fixtures in the group with the provided parameters
-d.updateAllFixturesInGroup("group", {
-  "red": 50,
-  "green": 0,
-  "blue": 0,
-  "white": 0,
-}, 5000);
+}, 2000);
