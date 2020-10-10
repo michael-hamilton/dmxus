@@ -20,18 +20,22 @@ Require the library as you would any node module. Instantiate the class by passi
 ```
 const dmxus = require("dmxus");
 
+// Windows
 const d = new dmxus("enttec-dmx-usb-pro", "COM6");
+
+// Mac/Linux
+/dev/tty.usbserial-EN288085
 ```
-At the moment, only the Enttec DMX USB Pro interface is supported.
+
+At the moment, dmxus only comes with support for the Enttec DMX USB Pro interface. Drivers can be registered in `drivers/index.js`. See `drivers/enttec-dmx-usb-pro-driver.js` to get an idea for how to write a driver for a different interface.
 
 
 #### Patching and Grouping
 
-Patch fixtures using the `patchFixture()` method. The first parameter is the start address of the fixture to be patched, and the second is a fixture profile object (see appendix for the shape of this object). dmxus also includes a utility method `getFixtureProfile()` for retrieving preexisting fixture profiles.
+Patch fixtures using the `patchFixture()` method. The first parameter is the start address of the fixture to be patched, and the second is a fixture profile object (see appendix for the shape of this object). dmxus also includes a utility method `getFixtureProfile()` for retrieving pre-existing fixture profiles.
 ```
 d.patchFixture(1, dmxus.getFixtureProfile("IRGB"));
 ```
-
 
 Fixtures can be grouped using the `addFixtureToGroup()` method. Pass in a group name and the starting address of the fixture to add the fixture to the group.
 ```
@@ -41,7 +45,7 @@ d.addFixtureToGroup("group", 1);
 
 #### Updating Fixtures
 
-dmxus provides a few methods for updating fixtures.  All methods for updating fixtures expect a parameters object that defines what fixture parameters should update. The object's keys are the parameter name to control (see appendix for standardized parameter names), and values are a hex value (0 - 255).
+dmxus provides a few methods for updating fixtures.  All methods for updating fixtures expect a parameters object that defines what fixture parameters should update. The object's keys are the names of the parameter to control (see appendix for standardized parameter names), and values are a hex value (0 - 255).
 ```
 const parameters = {
     "intensity": 255,
@@ -51,7 +55,7 @@ const parameters = {
 };
 ```
   
-\
+
 To update a single fixture, call the `updateSingleFixture()` method, passing in the fixture start address and parameters to update on the fixture.
 
 To update all of the fixtures in a group, call the `updateAllFixturesInGroup()` method, passing in a group name and parameters to update on the fixtures in the group. This method accepts an optional third parameter for defining the number of milliseconds to fade into the new scene.
@@ -86,7 +90,7 @@ Some generic profiles come standard with dmxus. If you want to patch a fixture f
 ```
 The order of the profile's list of parameters is important and should correspond to the respective channels on the fixture. Existing profiles can be found in `profiles.json` in the root of the dmxus repo.
 
-Parameter names are arbitrary, but the standardized names used within dmxus profiles are:
+Parameter names are arbitrary, but the standardized names currently used within dmxus profiles are:
 * amber
 * blue
 * green
@@ -101,7 +105,7 @@ Parameter names are arbitrary, but the standardized names used within dmxus prof
 
 
 ## License
-Released under the MIT license. Do whatever you wish with it, just don't @ me.
+Released under the MIT license - do whatever you wish with it.
 
 
 

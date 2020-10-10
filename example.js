@@ -5,7 +5,7 @@ const dmxus = require("./index");
 
 
 // Create an instance of dmxus with the correct port
-const d = new dmxus("enttec-dmx-usb-pro", "COM3");
+const d = new dmxus("enttec-dmx-usb-pro", "/dev/tty.usbserial-EN288085");
 
 
 // Patch some fixtures
@@ -39,6 +39,6 @@ d.updateAllFixtures(initParameters);
 d.updateAllFixturesInGroup("group", {
   "red": 0,
   "green": 0,
-  "blue": 255,
-  "white": 0,
-}, 2000);
+  "blue": 0,
+  "white": 10,
+}, 1000);
