@@ -24,7 +24,7 @@ const dmxus = require("dmxus");
 const d = new dmxus("enttec-dmx-usb-pro", "COM6");
 
 // Mac/Linux
-/dev/tty.usbserial-EN288085
+const d = new dmxus("enttec-dmx-usb-pro", "/dev/tty.usbserial-EN288085");
 ```
 
 At the moment, dmxus only comes with support for the Enttec DMX USB Pro interface. Drivers can be registered in `drivers/index.js`. See `drivers/enttec-dmx-usb-pro-driver.js` to get an idea for how to write a driver for a different interface.
