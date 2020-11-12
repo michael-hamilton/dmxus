@@ -40,5 +40,5 @@ d.updateAllFixturesInGroup("group", {
   "red": 0,
   "green": 0,
   "blue": 0,
-  "white": 10,
+  "white": 0,
 }, 1000);
