@@ -1,5 +1,10 @@
 // The main dmxus class
 
+const http = require('http');
+const express = require('express');
+const fs = require('fs');
+const path = require('path');
+const io = require('socket.io');
 const Driver = require('./drivers');
 const profiles = require('./profiles');
 
@@ -12,6 +17,31 @@ class DMXUS {
     this.groups = {};
     this.refreshRate = 25;
     this.timers = {};
+    this.app = null;
+    this.server = null;
+    this.socket = null;
+  }
+
+
+  // Utility method that returns a random value from 0-255
+  static getRandom8BitValue = () => {
+    return Math.floor(Math.random() * 255);
+  }
+
+
+  // Initializes a server on the provided port (default 3000)
+  initServer(port=3000) {
+    this.app = express();
+    this.server = http.Server(this.app);
+    this.socket = io(this.server, {transports: ['websocket']});
+
+    this.app.get('/', (req, res) => {
+      res.sendFile(`${__dirname}/socketClientExample.html`);
+    });
+
+    this.socket.on('connection', (socket) => console.log('dmxus client connected'));
+
+    this.server.listen(port);
   }
 
 
@@ -130,6 +160,10 @@ class DMXUS {
   // Calls the update method on the driver with the current state of the universe
   update() {
     this.driver.send(this.universe);
+
+    if (this.socket) {
+      this.socket.emit('update', this.universe.toJSON());
+    }
   }
 
 

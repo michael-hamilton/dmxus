@@ -3,8 +3,7 @@
   "version": "0.5.4",
   "description": "A high level Javascript library for controlling lighting fixtures via DMX.",
   "main": "index.js",
-  "scripts": {
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/michael-hamilton/dmxus.git"
@@ -20,6 +19,8 @@
   },
   "homepage": "https://github.com/michael-hamilton/dmxus#readme",
   "dependencies": {
-    "serialport": "^7.1.5"
+    "express": "^4.17.1",
+    "serialport": "^7.1.5",
+    "socket.io": "^3.1.1"
   }
 }
