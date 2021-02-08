@@ -2,8 +2,6 @@
 
 const http = require('http');
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
 const io = require('socket.io');
 const Driver = require('./drivers');
 const profiles = require('./profiles');
@@ -18,6 +16,7 @@ class DMXUS {
     this.refreshRate = 25;
     this.timers = {};
     this.app = null;
+    this.io = null;
     this.server = null;
     this.socket = null;
   }
@@ -33,13 +32,17 @@ class DMXUS {
   initServer(port=3000) {
     this.app = express();
     this.server = http.Server(this.app);
-    this.socket = io(this.server, {transports: ['websocket']});
+    this.io = io(this.server, {transports: ['websocket']});
 
     this.app.get('/', (req, res) => {
-      res.sendFile(`${__dirname}/socketClientExample.html`);
+      res.sendFile(`${__dirname}/dist/index.html`);
     });
 
-    this.socket.on('connection', (socket) => console.log('dmxus client connected'));
+    this.io.on('connection', (socket) => {
+      console.log('dmxus client connected')
+      this.socket = socket;
+      this.socket.emit('patch', this.getPatch());
+    });
 
     this.server.listen(port);
   }
@@ -59,6 +62,10 @@ class DMXUS {
     }
     else {
       this.groups[groupName].push(fixture);
+    }
+
+    if(this.socket) {
+      this.socket.emit('patch', this.patch);
     }
 
     return fixture;

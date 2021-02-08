@@ -1,0 +1,13 @@
+.fixture {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 1rem;
+  padding: 1rem;
+
+  .color {
+    height: 100px;
+    width: 100px;
+  }
+}

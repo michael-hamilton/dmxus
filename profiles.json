@@ -1,6 +1,7 @@
 {
   "Dimmer": {
     "description": "A single channel for intensity control",
+    "type": "i",
     "parameters": [
       "intensity"
     ]
@@ -8,6 +9,7 @@
 
   "IRGB": {
     "description": "4 channel rgb fixture with intensity",
+    "type": "irgb",
     "parameters": [
       "intensity",
       "red",
@@ -18,6 +20,7 @@
 
   "IRGBA": {
     "description": "5 channel rgba fixture with intensity",
+    "type": "irgba",
     "parameters": [
       "intensity",
       "red",
@@ -29,6 +32,7 @@
 
   "IRGBAW": {
     "description": "6 channel rgbaw fixture with intensity",
+    "type": "irgbaw",
     "parameters": [
       "intensity",
       "red",
@@ -41,6 +45,7 @@
 
   "IRGBW": {
     "description": "5 channel rgbw fixture with intensity",
+    "type": "irgbw",
     "parameters": [
       "intensity",
       "red",
@@ -52,6 +57,7 @@
 
   "RGB": {
     "description": "3 channel rgb fixture",
+    "type": "irgb",
     "parameters": [
       "red",
       "green",
@@ -61,6 +67,7 @@
 
   "RGBA": {
     "description": "4 channel rgba fixture",
+    "type": "rgba",
     "parameters": [
       "red",
       "green",
@@ -71,6 +78,7 @@
 
   "RGBAW": {
     "description": "5 channel rgbaw fixture",
+    "type": "rgbaw",
     "parameters": [
       "red",
       "green",
@@ -82,6 +90,7 @@
 
   "RGBW": {
     "description": "4 channel rgbw fixture",
+    "type": "rgbw",
     "parameters": [
       "red",
       "green",
