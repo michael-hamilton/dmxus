@@ -73,6 +73,12 @@ Use the `getPatch()` method to retrieve the current patch configuration.
 
 `getPatchedFixtureProfile()` accepts a start address and returns the profile of the fixture patched at that address.
 
+`getRandom8BitValue()` returns a random decimal value from 0-255;
+
+## Server
+
+There is a simple webserver included for viewing the status of the universe controlled by the dmxus instance.
+The `initServer()` method will start a server on the default port `9090`. Pass a different port number to this function if you want to run the server on a different port.
 
 
 ## Appendix

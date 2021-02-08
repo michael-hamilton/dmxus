@@ -1,9 +1,12 @@
 {
   "name": "dmxus",
-  "version": "0.5.4",
+  "version": "0.6.1",
   "description": "A high level Javascript library for controlling lighting fixtures via DMX.",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "buildClient": "parcel build client/index.html",
+    "postinstall": "npm run buildClient"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/michael-hamilton/dmxus.git"
@@ -20,7 +23,6 @@
   "homepage": "https://github.com/michael-hamilton/dmxus#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "parcel-plugin-inliner": "^1.0.14",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "serialport": "^7.1.5",
@@ -29,6 +31,7 @@
   },
   "devDependencies": {
     "parcel-bundler": "^1.12.4",
+    "parcel-plugin-inliner": "^1.0.14",
     "sass": "^1.32.6"
   }
 }

@@ -22,14 +22,8 @@ class DMXUS {
   }
 
 
-  // Utility method that returns a random value from 0-255
-  static getRandom8BitValue = () => {
-    return Math.floor(Math.random() * 255);
-  }
-
-
   // Initializes a server on the provided port (default 3000)
-  initServer(port=3000) {
+  initServer(port = 9090) {
     this.app = express();
     this.server = http.Server(this.app);
     this.io = io(this.server, {transports: ['websocket']});
@@ -45,6 +39,7 @@ class DMXUS {
     });
 
     this.server.listen(port);
+    console.log(`Initialized dmxus server on port ${port}.`)
   }
 
 
@@ -177,6 +172,11 @@ class DMXUS {
   // Returns the device profile of the provided profile name
   static getFixtureProfile(profileName) {
     return profiles[profileName];
+  }
+
+  // Utility method that returns a random value from 0-255
+  static getRandom8BitValue() {
+    return Math.floor(Math.random() * 255);
   }
 
 }
