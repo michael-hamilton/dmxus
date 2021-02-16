@@ -22,10 +22,11 @@
   },
   "homepage": "https://github.com/michael-hamilton/dmxus#readme",
   "dependencies": {
+    "@serialport/bindings": "^9.0.4",
     "express": "^4.17.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "serialport": "^7.1.5",
+    "serialport": "^9.0.6",
     "socket.io": "^3.1.1",
     "socket.io-client": "^3.1.1"
   },

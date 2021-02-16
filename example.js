@@ -5,7 +5,7 @@ const dmxus = require('./index');
 
 
 // Create an instance of dmxus with the correct port
-const d = new dmxus('enttec-dmx-usb-pro', '/dev/tty.usbserial-EN286117');
+const d = new dmxus('enttec-dmx-usb-pro', 'COM3');
 
 
 // Initialize server
