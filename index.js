@@ -3,7 +3,9 @@
 const http = require('http');
 const express = require('express');
 const io = require('socket.io');
+const SerialPort = require('serialport');
 const Driver = require('./drivers');
+const Server = require('./server');
 const profiles = require('./profiles');
 
 class DMXUS {
@@ -11,6 +13,7 @@ class DMXUS {
   constructor(driverName, port) {
     this.driver = new (Driver(driverName))(port);
     this.universe = Buffer.alloc(513, 0);
+    this.devices = [];
     this.patch = {};
     this.groups = {};
     this.refreshRate = 25;
@@ -18,28 +21,19 @@ class DMXUS {
     this.app = null;
     this.io = null;
     this.server = null;
-    this.socket = null;
   }
 
 
   // Initializes a server on the provided port (default 3000)
-  initServer(port = 9090) {
-    this.app = express();
-    this.server = http.Server(this.app);
-    this.io = io(this.server, {transports: ['websocket']});
+  initServer(port) {
+    this.server = new Server(port, this);
+    this.server.init();
+  }
 
-    this.app.get('/', (req, res) => {
-      res.sendFile(`${__dirname}/dist/index.html`);
-    });
 
-    this.io.on('connection', (socket) => {
-      console.log('dmxus client connected')
-      this.socket = socket;
-      this.socket.emit('patch', this.getPatch());
-    });
-
-    this.server.listen(port);
-    console.log(`Initialized dmxus server on port ${port}.`)
+  // Returns a list of serial ports as reported by the system
+  async listPorts() {
+    return await SerialPort.list();
   }
 
 
@@ -59,8 +53,8 @@ class DMXUS {
       this.groups[groupName].push(fixture);
     }
 
-    if(this.socket) {
-      this.socket.emit('patch', this.patch);
+    if(this.server) {
+      this.server.emit('patch', this.patch);
     }
 
     return fixture;
@@ -163,8 +157,8 @@ class DMXUS {
   update() {
     this.driver.send(this.universe);
 
-    if (this.socket) {
-      this.socket.emit('update', this.universe.toJSON());
+    if (this.server) {
+      this.server.emit('update', this.universe.toJSON());
     }
   }
 
