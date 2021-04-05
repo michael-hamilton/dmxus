@@ -21,10 +21,10 @@ Require the library as you would any node module. Instantiate the class by passi
 const dmxus = require("dmxus");
 
 // Windows
-const d = new dmxus("enttec-dmx-usb-pro", "COM6");
+const universe = new dmxus("enttec-dmx-usb-pro", "COM6");
 
 // Mac/Linux
-const d = new dmxus("enttec-dmx-usb-pro", "/dev/tty.usbserial-EN288085");
+const universe = new dmxus("enttec-dmx-usb-pro", "/dev/tty.usbserial-EN288085");
 ```
 
 At the moment, dmxus only comes with support for the Enttec DMX USB Pro interface. Drivers can be registered in `drivers/index.js`. See `drivers/enttec-dmx-usb-pro-driver.js` to get an idea for how to write a driver for a different interface.
@@ -34,12 +34,12 @@ At the moment, dmxus only comes with support for the Enttec DMX USB Pro interfac
 
 Patch fixtures using the `patchFixture()` method. The first parameter is the start address of the fixture to be patched, and the second is a fixture profile object (see appendix for the shape of this object). dmxus also includes a utility method `getFixtureProfile()` for retrieving pre-existing fixture profiles.
 ```
-d.patchFixture(1, dmxus.getFixtureProfile("IRGB"));
+universe.patchFixture(1, dmxus.getFixtureProfile("IRGB"));
 ```
 
 Fixtures can be grouped using the `addFixtureToGroup()` method. Pass in a group name and the starting address of the fixture to add the fixture to the group.
 ```
-d.addFixtureToGroup("group", 1);
+universe.addFixtureToGroup("group", 1);
 ```
 
 
@@ -75,10 +75,13 @@ Use the `getPatch()` method to retrieve the current patch configuration.
 
 `getRandom8BitValue()` returns a random decimal value from 0-255;
 
+
+
 ## Server
 
-There is a simple webserver included for viewing the status of the universe controlled by the dmxus instance.
-The `initServer()` method will start a server on the default port `9090`. Pass a different port number to this function if you want to run the server on a different port.
+There is an (opt-in) simple webserver included for viewing the status of the universe controlled by the dmxus instance.
+Use the `initServer()` method to start a server on the default port `9090`. Optionally you can pass a port number to this method if you want to run the server on a different port.
+
 
 
 ## Appendix
@@ -94,26 +97,41 @@ Some generic profiles come standard with dmxus. If you want to patch a fixture f
     ]
 }
 ```
-The order of the profile's list of parameters is important and should correspond to the respective channels on the fixture. Existing profiles can be found in `profiles.json` in the root of the dmxus repo.
+The order of the profile's list of parameters is important and should correspond to the respective channels on the fixture. Existing profiles can be found in `profiles.json` at the root of the dmxus repo.
 
-Parameter names are arbitrary, but the standardized names currently used within dmxus profiles are:
+Parameter names can be arbitrary, however for consistency it is recommended that you follow industry standard names such as:
 * amber
+* beam
 * blue
+* color_wheel
+* gobo
 * green
 * intensity
 * pan
 * pan_fine
 * red
+* strobe
 * tilt
 * tilt_fine
 * white
 
 
 
+## Contributing
+If you find this library useful and want to contribute to it, please feel free to do so on the GitHub page. 
+
+Contributions that would be especially useful are fixture profiles as well as drivers to support other interfaces.
+
+If you have a request for help with making a profile for a specific fixture or using an unsupported interface, open an issue and we can go from there. 
+
+
+
 ## License
-Released under the MIT license - do whatever you wish with it.
+Released under the MIT license - do whatever you wish with it and have fun!
+
+_**dmxus is pre 1.0.0**_ - If you do find yourself using it, please keep in mind things may become incompatible between versions.
 
 
 
 ## Acknowledgement
-Made with love by [Michael Hamilton](http://hamblest.one).
+Made with love by [Michael Hamilton](http://miska.me).
