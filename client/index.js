@@ -2,6 +2,6 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Universe from './universe';
+import Client from './client';
 
-ReactDOM.render(<Universe />, document.getElementById('root'));
+ReactDOM.render(<Client />, document.getElementById('root'));

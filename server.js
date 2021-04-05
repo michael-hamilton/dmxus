@@ -15,6 +15,8 @@ class Server {
   }
 
   init() {
+    this.app.use(express.static('dist'));
+
     this.app.get('/', (req, res) => {
       res.sendFile(`${__dirname}/dist/index.html`);
     });

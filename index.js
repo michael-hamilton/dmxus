@@ -1,8 +1,5 @@
 // The main dmxus class
 
-const http = require('http');
-const express = require('express');
-const io = require('socket.io');
 const SerialPort = require('serialport');
 const Driver = require('./drivers');
 const Server = require('./server');
@@ -24,7 +21,7 @@ class DMXUS {
   }
 
 
-  // Initializes a server on the provided port (default 3000)
+  // Initializes a server on the provided port (default 3000) with a reference to the dmxus instance
   initServer(port) {
     this.server = new Server(port, this);
     this.server.init();

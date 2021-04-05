@@ -9,7 +9,8 @@ class Client extends Component {
 
     this.state = {
       universe: [],
-      patch: {}
+      patch: {},
+      ports: [],
     };
 
     this.socket = null;
@@ -23,13 +24,14 @@ class Client extends Component {
     });
 
     this.socket.on('patch', (patch) => {
-      console.log(patch);
       this.setState({patch});
     });
 
-    this.socket.emit('getPorts');
+    this.socket.on('ports', (ports) => {
+      this.setState({ports});
+    });
 
-    // this.socket.on('ports', (ports) => console.log(ports));
+    this.socket.emit('getPorts');
   }
 
   render() {
