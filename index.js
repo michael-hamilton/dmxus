@@ -1,25 +1,27 @@
-// The main dmxus class
+// Main dmxus class
 
+const EventEmitter = require('events');
 const SerialPort = require('serialport');
 const Driver = require('./drivers');
 const Server = require('./server');
 const profiles = require('./profiles');
 
-class DMXUS {
+class DMXUS extends EventEmitter {
 
-  constructor(driverName, port) {
-    this.driverName = driverName;
-    this.port = port;
-    this.driver = new (Driver(driverName))(port);
-    this.universe = Buffer.alloc(513, 0);
+  constructor(driverName, interfacePort) {
+    super();
+
     this.devices = [];
-    this.patch = {};
+    this.driver = new (Driver(driverName))(interfacePort);
+    this.driverName = driverName;
     this.groups = {};
-    this.refreshRate = 25;
-    this.timers = {};
-    this.app = null;
+    this.interfacePort = interfacePort;
     this.io = null;
+    this.patch = {};
+    this.refreshRate = 25;
     this.server = null;
+    this.timers = {};
+    this.universe = Buffer.alloc(513, 0);
   }
 
 
@@ -37,15 +39,9 @@ class DMXUS {
 
 
   // Changes the serial port used by the driver
-  changeInterfacePort(port) {
-    this.port = port;
-    this.driver.changePort(port);
-  }
-
-
-  // Returns the port currently used dmxus
-  getPort() {
-    return this.port;
+  changeInterfacePort(interfacePort) {
+    this.interfacePort = interfacePort;
+    this.driver.changePort(interfacePort);
   }
 
 
@@ -65,9 +61,7 @@ class DMXUS {
       this.groups[groupName].push(fixture);
     }
 
-    if(this.server) {
-      this.server.emit('patch', this.patch);
-    }
+    this.emit('patch', this.patch);
 
     return fixture;
   }
@@ -166,13 +160,17 @@ class DMXUS {
   }
 
 
+  // Returns the interfacePort currently used dmxus
+  getPort() {
+    return this.interfacePort;
+  }
+
+
   // Calls the update method on the driver with the current state of the universe
   update() {
     this.driver.send(this.universe);
 
-    if (this.server) {
-      this.server.emit('update', this.universe.toJSON());
-    }
+    this.emit('update', this.universe.toJSON());
   }
 
 

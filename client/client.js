@@ -1,3 +1,5 @@
+// dmxus web client
+
 import io from 'socket.io-client';
 import React, {Component} from 'react';
 import {Fixture_IRGB, Fixture_RGBW} from './fixtures';

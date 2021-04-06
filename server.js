@@ -1,19 +1,21 @@
 // The dmxus server class
 
-const http = require('http');
 const express = require('express');
+const http = require('http');
 const io = require('socket.io');
 
 class Server {
 
   constructor(port = 9090, dmxus) {
-    this.port = port;
     this.app = express();
     this.dmxus = dmxus;
+    this.port = port;
     this.server = http.Server(this.app);
     this.io = io(this.server, {transports: ['websocket']});
   }
 
+
+  // Initializes a server which interfaces with the current dmxus instance
   init() {
     this.app.use(express.static('dist'));
 
@@ -23,28 +25,18 @@ class Server {
 
     this.io.on('connection', (socket) => {
       console.log('dmxus client connected')
+
       socket.emit('patch', this.dmxus.getPatch());
       socket.emit('port', this.dmxus.getPort());
-      socket.on('getPorts', this.getSerialPorts.bind(this));
-      socket.on('changePort', (port) => {
-        this.dmxus.changeInterfacePort(port);
-      });
+      socket.on('getPorts', async () => socket.emit('ports', await this.dmxus.listPorts()));
+      socket.on('changePort', (port) => this.dmxus.changeInterfacePort(port));
+
+      this.dmxus.on('update', (universe) => socket.emit('update', universe));
     });
 
     this.server.listen(this.port);
 
     console.log(`Initialized dmxus server on port ${this.port}.`)
-  }
-
-  async getSerialPorts() {
-    this.emit('ports', await this.dmxus.listPorts())
-  }
-
-  // Wraps the socket.io emit method
-  emit(channel, message) {
-    if (this.io) {
-      this.io.emit(channel, message);
-    }
   }
 }
 
