@@ -32,6 +32,19 @@ class EnttecDmxUsbProDriver {
     this.port.write(data);
   }
 
+  changePort(port) {
+    if(this.port.isOpen) {
+      this.port.close();
+    }
+
+    this.port = new SerialPort(port,  {
+      'baudRate': 250000,
+      'dataBits': 8,
+      'stopBits': 2,
+      'parity': 'none'
+    });
+  }
+
 }
 
 module.exports = EnttecDmxUsbProDriver;

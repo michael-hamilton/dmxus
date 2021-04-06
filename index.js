@@ -8,6 +8,8 @@ const profiles = require('./profiles');
 class DMXUS {
 
   constructor(driverName, port) {
+    this.driverName = driverName;
+    this.port = port;
     this.driver = new (Driver(driverName))(port);
     this.universe = Buffer.alloc(513, 0);
     this.devices = [];
@@ -31,6 +33,19 @@ class DMXUS {
   // Returns a list of serial ports as reported by the system
   async listPorts() {
     return await SerialPort.list();
+  }
+
+
+  // Changes the serial port used by the driver
+  changeInterfacePort(port) {
+    this.port = port;
+    this.driver.changePort(port);
+  }
+
+
+  // Returns the port currently used dmxus
+  getPort() {
+    return this.port;
   }
 
 
@@ -150,6 +165,7 @@ class DMXUS {
     return fixtureParameterValues;
   }
 
+
   // Calls the update method on the driver with the current state of the universe
   update() {
     this.driver.send(this.universe);
@@ -164,6 +180,7 @@ class DMXUS {
   static getFixtureProfile(profileName) {
     return profiles[profileName];
   }
+
 
   // Utility method that returns a random value from 0-255
   static getRandom8BitValue() {

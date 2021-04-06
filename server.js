@@ -24,7 +24,11 @@ class Server {
     this.io.on('connection', (socket) => {
       console.log('dmxus client connected')
       socket.emit('patch', this.dmxus.getPatch());
+      socket.emit('port', this.dmxus.getPort());
       socket.on('getPorts', this.getSerialPorts.bind(this));
+      socket.on('changePort', (port) => {
+        this.dmxus.changeInterfacePort(port);
+      });
     });
 
     this.server.listen(this.port);
@@ -33,7 +37,6 @@ class Server {
   }
 
   async getSerialPorts() {
-    console.log('get ports')
     this.emit('ports', await this.dmxus.listPorts())
   }
 

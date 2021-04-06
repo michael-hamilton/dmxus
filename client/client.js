@@ -11,6 +11,7 @@ class Client extends Component {
       universe: [],
       patch: {},
       ports: [],
+      port: null,
     };
 
     this.socket = null;
@@ -31,7 +32,17 @@ class Client extends Component {
       this.setState({ports});
     });
 
+    this.socket.on('port', (port) => {
+      this.setState({port});
+    });
+
     this.socket.emit('getPorts');
+  }
+
+  handleChangePort(event) {
+    const port = event.target.value;
+    this.setState({port})
+    this.socket.emit('changePort', port);
   }
 
   render() {
@@ -41,6 +52,15 @@ class Client extends Component {
     return (
       <div className={'app-wrapper'}>
         <h1 className={'header'}>dmxus client</h1>
+
+        <Select
+          defaultOption={"Select an interface port..."}
+          options={this.state.ports.map(port => (
+            {value: port.path, option: port.path}
+          ))}
+          onChange={this.handleChangePort.bind(this)}
+          value={this.state.port}
+        />
 
         {renderFixtures(this.state.patch, this.state.universe)}
       </div>
@@ -84,5 +104,17 @@ const renderFixtures = (fixtures, universe) => {
 
   return fixtureComponents;
 }
+
+// Generic select dropdown component
+const Select = props => (
+  <select onChange={props.onChange} value={props.value}>
+    <option disabled>{props.defaultOption}</option>
+    {
+      props.options.map((option, i) =>
+        <option key={i} value={option.value}>{option.option}</option>
+      )
+    }
+  </select>
+);
 
 export default Client;
