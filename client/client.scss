@@ -2,7 +2,11 @@
   background-color: white;
   border-radius: 0.125rem;
   box-shadow: 0 0 0.25rem 0.25rem #222;
-  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  font-family: sans-serif;
+  height: 500px;
+  overflow: hidden;
   padding: 1rem;
   width: 720px;
 
@@ -11,6 +15,7 @@
     background-color: #373737;
     display: flex;
     justify-content: space-between;
+    margin-bottom: 1rem;
     padding: 0.25rem;
 
     .app-title {
@@ -21,33 +26,97 @@
     .interface-selection-wrapper {
       select {
         border-radius: 0;
+        font-family: sans-serif;
+        font-weight: 200;
         margin: 0.125rem;
         padding: 0.25rem;
       }
     }
   }
 
-  .device-wrapper {
+  .tab-navigation {
+    .tab-button {
+      background-color: #eeeeee;
+      border: none;
+      font-family: sans-serif;
+      font-weight: 100;
+      outline: none;
+      padding: 0.5rem;
+
+      &.active {
+        background-color: #cccccc;
+        font-weight: 900;
+      }
+
+      &:hover:not(.active) {
+        background-color: #dddddd;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .content-wrapper {
+    background-color: #cccccc;
     display: flex;
     flex-flow: wrap row;
     justify-content: center;
     overflow: scroll;
-    margin: 1rem 0;
+    padding: 0.5rem 0;
 
-    .device {
-      border: 0.125rem solid #373737;
-      color: #999999;
-      font-size: 0.75rem;
-      font-weight: 200;
-      height: 3rem;
-      margin: 0.25rem;
-      padding: 0.1rem;
-      width: 3rem;
+    .devices {
+      display: flex;
+      flex-flow: wrap row;
+      justify-content: center;
 
-      &.isRegistered {
-        background-color: #cccccc;
-        color: #222;
-        font-weight: 500;
+      .device {
+        background-color: #eeeeee;
+        border: 0.125rem solid #373737;
+        color: #999999;
+        font-size: 0.75rem;
+        font-weight: 200;
+        height: 3rem;
+        margin: 0.25rem;
+        padding: 0.1rem;
+        width: 3rem;
+
+        .deviceId {
+          background-color: rgba(255, 255, 255, 0.75);
+          color: #aaaaaa;
+          padding: 0.125rem;
+        }
+
+        &.isRegistered {
+          background-color: #cccccc;
+          color: #222;
+          font-weight: 500;
+
+          .deviceId {
+            color: #373737;
+          }
+        }
+
+      }
+    }
+
+    .universe {
+      display: flex;
+      flex-flow: wrap row;
+      justify-content: center;
+
+      .address {
+        background-color: #ffffff;
+        border: 0.125rem solid #373737;
+        color: #999999;
+        font-size: 0.75rem;
+        font-weight: 200;
+        height: 2.125rem;
+        margin: 0.25rem;
+        padding: 0.1rem;
+        width: 2.125rem;
+
+        .value {
+          color: #ff0000;
+        }
       }
     }
   }

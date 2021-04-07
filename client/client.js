@@ -2,7 +2,6 @@
 
 import React, {Component} from 'react';
 import io from 'socket.io-client';
-import {Fixture_IRGB, Fixture_RGBW} from './fixtures';
 import './client.scss';
 
 class Client extends Component {
@@ -14,6 +13,7 @@ class Client extends Component {
       interfaceName: '',
       interfacePort: '',
       interfacePorts: [],
+      page: 0,
       patch: {},
       universe: [],
     };
@@ -70,9 +70,6 @@ class Client extends Component {
   }
 
   render() {
-
-    const _u = this.state.universe;
-
     return (
       <div className={'app-wrapper'}>
         <div className={'header'}>
@@ -101,59 +98,68 @@ class Client extends Component {
           </div>
         </div>
 
-        <div className={'device-wrapper'}>
-          {renderDevices(this.state.devices)}
+        <div className={'tab-navigation'}>
+          <button className={`tab-button ${this.state.page === 0 ? 'active' : ''}`} onClick={() => this.setState({page: 0})}>Devices</button>
+          <button className={`tab-button ${this.state.page === 1 ? 'active' : ''}`} onClick={() => this.setState({page: 1})}>Universe</button>
         </div>
 
-        {/*{renderFixtures(this.state.patch, this.state.universe)}*/}
+        {
+          this.state.page === 0 ? (
+            <div className={'content-wrapper'}>
+              <div className={'devices'}>
+                {renderDevices(this.state.devices, this.state.universe)}
+              </div>
+            </div>
+          ) : null
+        }
+
+        {
+          this.state.page === 1 ? (
+            <div className={'content-wrapper'}>
+              <div className={'universe'}>
+                {renderUniverse(this.state.universe)}
+              </div>
+            </div>
+          ) : null
+        }
       </div>
     );
   }
 }
 
-// Accepts a dmxus patch and a universe object, returns an array of fixture components
-const renderFixtures = (fixtures, universe) => {
-  const fixtureComponents = [];
-  Object.keys(fixtures).forEach((address) => {
-    const _a = parseInt(address);
-    const _f = fixtures[address];
-    const _p = _f.parameters;
+// Accepts a list of dmxus devices and a universe object and renders a grid of devices
+const renderDevices = (devices, universe) => {
+  return devices.map((device) => {
+    const _a = parseInt(device.startAddress);
+    let backgroundColor;
 
-    if (_f.type === 'irgb') {
-      fixtureComponents.push(
-        <Fixture_IRGB
-          key={address}
-          startAddress={address}
-          intensity={universe[_a + _p.indexOf('intensity')]}
-          red={universe[_a + _p.indexOf('red')]}
-          green={universe[_a + _p.indexOf('green')]}
-          blue={universe[_a + _p.indexOf('blue')]}
-        />
-      );
+    if(device.profile) {
+      const _p = device.profile.parameters;
+
+      backgroundColor = `rgb(${universe[_a + _p.indexOf('red')]}, ${universe[_a + _p.indexOf('green')]}, ${universe[_a + _p.indexOf('blue')]})`;
     }
-    else if (_f.type === 'rgbw') {
-      fixtureComponents.push(
-        <Fixture_RGBW
-          key={address}
-          startAddress={address}
-          red={universe[_a + _p.indexOf('red')]}
-          green={universe[_a + _p.indexOf('green')]}
-          blue={universe[_a + _p.indexOf('blue')]}
-          white={universe[_a + _p.indexOf('white')]}
-        />
-      );
-    }
-  });
 
-  return fixtureComponents;
-}
+    return (
+      <div
+        className={`device ${device.startAddress ? 'isRegistered' : ''}`}
+        style={{backgroundColor}}
+      >
+        <span className={'deviceId'}>{device.id}</span>
+      </div>
+  )});
+};
 
-
-// Accepts a dmxus patch and a universe object, returns an array of fixture components
-const renderDevices = (devices) => {
-  return devices.map((device) => (
-    <div className={`device ${device.startAddress ? 'isRegistered' : ''}`}>{device.id}</div>
-  ));
+// Accepts a universe object and renders addresses with their corresponding values
+const renderUniverse = (universe) => {
+  return universe.slice(1).map((address, index) => {
+    return (
+      <div
+        className={'address'}
+      >
+        <p>{index + 1}</p>
+        <p className={'value'}>{universe[index + 1]}</p>
+      </div>
+    )});
 };
 
 // Generic select dropdown component
