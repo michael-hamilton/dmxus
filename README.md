@@ -82,7 +82,7 @@ Use the `getPatch()` method to retrieve the current patch configuration.
 ## Server
 
 There is a simple (opt-in) webserver included for viewing the status of the universe controlled by the dmxus instance.
-Use the `initServer()` method to start a server on the default port `9090`. You can optionally pass a port number to this method if you want to run the server on a different port.
+Use the `initWebServer()` method to start a server on the default port `9090`. You can optionally pass a port number to this method if you want to run the server on a different port.
 
 
 
@@ -124,9 +124,9 @@ Parameter names can be arbitrary, however for consistency it is recommended that
 
 #### Simulator Driver
 
-The simulator driver exposes the same `send()` and `changePort()` methods as a hardware interface driver, but by default they don't do anything.
+The simulator driver exposes the same `send()`, `changePort()`, and `closePort()` methods as a hardware interface driver, but by default they don't do anything.
 
-In place of a port name, you can optionally provide a custom dummy SerialPort instance used within the driver:
+In place of a port name, you can optionally provide a custom dummy SerialPort instance to be used within the driver:
 ```
 {
   isOpen: bool,

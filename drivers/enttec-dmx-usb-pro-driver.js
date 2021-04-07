@@ -34,9 +34,7 @@ class EnttecDmxUsbProDriver {
 
   // Accepts a port name and re-initializes this.port with a new SerialPort instance
   changePort(port) {
-    if(this.port.isOpen) {
-      this.port.close();
-    }
+    this.closePort();
 
     this.port = new SerialPort(port,  {
       'baudRate': 250000,
@@ -44,6 +42,13 @@ class EnttecDmxUsbProDriver {
       'stopBits': 2,
       'parity': 'none'
     });
+  }
+
+  // Closes the serial port connection
+  closePort() {
+    if(this.port.isOpen) {
+      this.port.close();
+    }
   }
 
 }

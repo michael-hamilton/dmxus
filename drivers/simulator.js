@@ -27,11 +27,16 @@ class SimulatorDriver {
 
   // Accepts and object which replaces the dummy SerialPort instance
   changePort(serialPortInstance = SimulatorDriver.SerialPortDummyInstance) {
+    this.closePort();
+
+    this.port = serialPortInstance;
+  }
+
+  // Closes the serial port connection
+  closePort() {
     if(this.port.isOpen) {
       this.port.close();
     }
-
-    this.port = serialPortInstance;
   }
 
   // Default dummy SerialPort instance

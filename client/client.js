@@ -22,7 +22,7 @@ class Client extends Component {
   }
 
   componentDidMount() {
-    this.socket = io(`localhost:3000`, {transports: ['websocket']});
+    this.socket = io({transports: ['websocket']});
 
     this.socket.on('update', (universe) => {
       this.setState({universe: universe.data});
@@ -49,6 +49,10 @@ class Client extends Component {
     });
 
     this.socket.emit('getPorts');
+  }
+
+  componentWillUnmount() {
+    this.socket.offAny();
   }
 
   handleChangeInterfaceDevice(event) {

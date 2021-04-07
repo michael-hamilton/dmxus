@@ -27,13 +27,14 @@ class DMXUS extends EventEmitter {
   }
 
 
-  // Initializes a server on the provided port (default 3000) with a reference to the dmxus instance
-  initServer(port) {
+  // Initializes a webserver on the provided port (default 9090) with a reference to the dmxus instance
+  initWebServer(port) {
     this.server = new Server(port, this);
     this.server.init();
   }
 
-  initDevices(deviceCount = 128) {
+  // Initializes the device list with a default count of 96 devices
+  initDevices(deviceCount = 96) {
     for(let i = 0; i < deviceCount; i++) {
       this.devices[i] = {
         id: i + 1,
@@ -44,14 +45,16 @@ class DMXUS extends EventEmitter {
     }
   }
 
+
   // Returns a list of serial ports as reported by the system
   async listPorts() {
     return await SerialPort.list();
   }
 
 
-  // Re-initializes the interface
+  // Closes the port used by the current driver and re-initializes the interface
   reinitializeDriver(driverName, interfacePort) {
+    this.driver.closePort();
     this.interfacePort = interfacePort;
     this.driverName = driverName;
     this.driver = new (Driver(driverName))(interfacePort);
@@ -206,7 +209,7 @@ class DMXUS extends EventEmitter {
   }
 
 
-  // Calls the update method on the driver with the current state of the universe
+  // Calls the update method on the driver with the current state of the universe then emits and update event with the universe state.
   update() {
     this.driver.send(this.universe);
 
