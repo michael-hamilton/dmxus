@@ -72,17 +72,23 @@
         background-color: #eeeeee;
         border: 0.125rem solid #373737;
         color: #999999;
+        display: flex;
         font-size: 0.75rem;
         font-weight: 200;
         height: 3rem;
         margin: 0.25rem;
-        padding: 0.1rem;
+        padding: 0.125rem;
         width: 3rem;
 
         .deviceId {
+          align-items: center;
           background-color: rgba(255, 255, 255, 0.75);
           color: #aaaaaa;
-          padding: 0.125rem;
+          display: flex;
+          justify-content: center;
+          height: 1rem;
+          text-align: center;
+          width: 1rem;
         }
 
         &.isRegistered {
