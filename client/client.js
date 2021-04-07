@@ -14,7 +14,6 @@ class Client extends Component {
       interfacePort: '',
       interfacePorts: [],
       page: 0,
-      patch: {},
       universe: [],
     };
 
@@ -26,10 +25,6 @@ class Client extends Component {
 
     this.socket.on('update', (universe) => {
       this.setState({universe: universe.data});
-    });
-
-    this.socket.on('patch', (patch) => {
-      this.setState({patch});
     });
 
     this.socket.on('devices', (devices) => {

@@ -17,7 +17,6 @@ class DMXUS extends EventEmitter {
     this.groups = {};
     this.interfacePort = interfacePort;
     this.io = null;
-    this.patch = {};
     this.refreshRate = 25;
     this.server = null;
     this.timers = {};
@@ -33,6 +32,7 @@ class DMXUS extends EventEmitter {
     this.server.init();
   }
 
+
   // Initializes the device list with a default count of 96 devices
   initDevices(deviceCount = 96) {
     for(let i = 0; i < deviceCount; i++) {
@@ -40,15 +40,10 @@ class DMXUS extends EventEmitter {
         id: i + 1,
         deviceName: null,
         startAddress: null,
-        profile: null
+        profile: null,
+        groups: [],
       }
     }
-  }
-
-
-  // Returns a list of serial ports as reported by the system
-  async listPorts() {
-    return await SerialPort.list();
   }
 
 
@@ -62,88 +57,86 @@ class DMXUS extends EventEmitter {
 
 
   // Accepts a deviceId, start address and a fixture profile object, and adds the fixture to the device list.  Returns the device object.
-  addDevice(deviceId, startAddress, profile, deviceName) {
+  addDevice(deviceId, startAddress, profile, deviceName = '', groups = []) {
     const newDevice = {
       deviceName,
       startAddress,
-      profile
+      profile,
+      groups
     };
 
     const deviceIndex = this.devices.findIndex(device => device.id === deviceId);
 
     this.devices[deviceIndex] = {...this.devices[deviceIndex], ...newDevice};
+
     return this.devices[deviceIndex];
   }
 
 
-  // Accepts a start address and a fixture profile object, and adds the fixture to the patch.  Returns the start address of the patched fixture.
-  patchFixture(startAddress, profile) {
-    this.patch[startAddress] = profile;
-    return startAddress;
-  }
-
-
-  // Accepts a group name and a fixture address and creates/adds the fixture to the group.
-  addFixtureToGroup(groupName, fixture) {
-    if(!this.groups[groupName]) {
-      this.groups[groupName] = [fixture];
-    }
-    else {
-      this.groups[groupName].push(fixture);
-    }
-
-    this.emit('patch', this.patch);
-
-    return fixture;
-  }
-
-
   // Updates a single fixture at the provided start address with the provided parameters.
-  updateSingleFixture(startAddress, parameters) {
-    const fixtureParameters = this.patch[startAddress].parameters;
+  updateDevice(deviceId, parameters) {
+    const device = this.getDeviceById(deviceId);
 
-    fixtureParameters.forEach((fixtureParameter, index) => {
-      this.universe[parseInt(startAddress) + index] = parameters[fixtureParameter];
-    });
+    if(device.profile) {
+      device.profile.parameters.forEach((parameter, index) => {
+        this.universe[parseInt(device.startAddress) + index] = parameters[parameter];
+      });
+    }
 
     this.update();
   }
 
 
   // Updates all fixtures with the provided parameters.
-  updateAllFixtures(parameters) {
-    Object.keys(this.patch).forEach(startAddress => {
-      this.updateSingleFixture(startAddress, parameters);
+  updateAllDevices(parameters) {
+    this.devices.forEach(device => {
+      this.updateDevice(device.id, parameters);
     });
 
     this.update();
   }
 
 
-  // Updates all fixtures in the provided group name with the provided parameters.
-  updateAllFixturesInGroup(groupName, parameters, fadeIn = 0) {
-    const oldFixtureParameterValues = {};
+  // Returns the device with the provided deviceId
+  getDeviceById(deviceId) {
+    const deviceIndex = this.devices.findIndex(device => device.id === deviceId);
 
-    if(this.groups[groupName]) {
+    return this.devices[deviceIndex];
+  }
+
+
+  // Returns devices which are a part of the provided group name
+  getDevicesByGroup(group) {
+    return this.devices.filter(device => device.groups.includes(group));
+  }
+
+
+  // Updates all fixtures in the provided group name with the provided parameters.
+  updateAllDevicesInGroup(groupName, parameters, fadeIn = 0) {
+    const oldDeviceParameterValues = {};
+    const devices = this.getDevicesByGroup(groupName);
+
+    if(devices) {
       let updateCount = 0;
       const targetUpdateCount = Math.round(fadeIn/this.refreshRate) || 1;
       const intervalTime = fadeIn/targetUpdateCount;
 
       clearInterval(this.timers[groupName]);
 
-      this.groups[groupName].forEach(fixtureAddress => {
-        oldFixtureParameterValues[fixtureAddress] = this.getFixtureValues(fixtureAddress);
+      devices.forEach(device => {
+        oldDeviceParameterValues[device.id] = this.getDeviceParameterValues(device.id);
       });
 
       this.timers[groupName] = setInterval(() => {
-        this.groups[groupName].forEach(fixtureAddress => {
+        devices.forEach(device => {
           const nextUpdate = {};
           Object.keys(parameters).forEach(parameter => {
-            const oldParamValue = oldFixtureParameterValues[fixtureAddress][parameter];
+            const oldParamValue = oldDeviceParameterValues[device.id][parameter];
             const targetParamValue = parameters[parameter];
             nextUpdate[parameter] = Math.round(oldParamValue + (targetParamValue - oldParamValue) * (updateCount/targetUpdateCount));
           });
-          this.updateSingleFixture(fixtureAddress, nextUpdate);
+
+          this.updateDevice(device.id, nextUpdate);
         });
 
         if(updateCount === targetUpdateCount) {
@@ -158,42 +151,28 @@ class DMXUS extends EventEmitter {
   }
 
 
-  // Returns the profile of the fixture patched at the provided start address
-  getPatchedFixtureProfile(startAddress) {
-    return this.patch[startAddress];
-  }
-
-
-  // Returns the parameter values of the fixture at the provided start address
-  getFixtureValues(startAddress) {
-    const fixtureParameterNames = this.getPatchedFixtureProfile(startAddress).parameters;
+  // Returns the parameter values of the specified device
+  getDeviceParameterValues(deviceId) {
+    const device = this.getDeviceById(deviceId)
     const fixtureParameterValues = {};
-    let parameterNameIndex = 0;
 
-    for(let address = 0; address <= fixtureParameterNames.length; address++) {
-      fixtureParameterValues[fixtureParameterNames[parameterNameIndex]] = this.universe[startAddress + address];
-      parameterNameIndex++;
+    if(device.profile) {
+      const fixtureParameterNames = device.profile.parameters;
+      let parameterNameIndex = 0;
+
+      for (let address = 0; address < fixtureParameterNames.length; address++) {
+        fixtureParameterValues[fixtureParameterNames[parameterNameIndex]] = this.universe[device.startAddress + address];
+        parameterNameIndex++;
+      }
     }
 
     return fixtureParameterValues;
   }
 
 
-  // Returns the interfacePort currently used by dmxus
-  getInterfacePort() {
-    return this.interfacePort;
-  }
-
-
-  // Returns the driver currently used by dmxus
-  getDriverName() {
-    return this.driverName;
-  }
-
-
-  // Returns the patch
-  getPatch() {
-    return this.patch;
+  // Returns a list of serial ports as reported by the system
+  async listPorts() {
+    return await SerialPort.list();
   }
 
 
@@ -203,9 +182,15 @@ class DMXUS extends EventEmitter {
   }
 
 
-  // Sets the patch
-  setPatch(patch) {
-    this.patch = patch;
+  // Returns the driver currently used by dmxus
+  getDriverName() {
+    return this.driverName;
+  }
+
+
+  // Returns the interfacePort currently used by dmxus
+  getInterfacePort() {
+    return this.interfacePort;
   }
 
 

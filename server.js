@@ -27,7 +27,6 @@ class Server {
       console.log('dmxus client connected')
 
       socket.emit('interfaceName', this.dmxus.getDriverName());
-      socket.emit('patch', this.dmxus.getPatch());
       socket.emit('devices', this.dmxus.getDevices());
       socket.emit('interfacePort', this.dmxus.getInterfacePort());
       socket.on('getPorts', async () => socket.emit('interfacePorts', await this.dmxus.listPorts()));
