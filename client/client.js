@@ -10,10 +10,11 @@ class Client extends Component {
     super(props);
 
     this.state = {
+      devices: [],
       interfaceName: '',
-      patch: {},
       interfacePort: '',
       interfacePorts: [],
+      patch: {},
       universe: [],
     };
 
@@ -29,6 +30,10 @@ class Client extends Component {
 
     this.socket.on('patch', (patch) => {
       this.setState({patch});
+    });
+
+    this.socket.on('devices', (devices) => {
+      this.setState({devices});
     });
 
     this.socket.on('interfacePorts', (interfacePorts) => {
@@ -66,29 +71,37 @@ class Client extends Component {
 
     return (
       <div className={'app-wrapper'}>
-        <h1 className={'header'}>dmxus client</h1>
+        <div className={'header'}>
+          <h1 className={'app-title'}>dmxus client</h1>
 
-        <Select
-          defaultOption={"Select an interface..."}
-          options={[
-            {value: 'simulator', option: 'Simulator'},
-            {value: 'enttec-dmx-usb-pro', option: 'Enttec DMX USB PRO'}
-          ]}
-          onChange={this.handleChangeInterfaceDevice.bind(this)}
-          value={this.state.interfaceName}
-        />
+          <div className={'interface-selection-wrapper'}>
+            <Select
+              defaultOption={"Select an interface..."}
+              options={[
+                {value: 'simulator', option: 'Simulator'},
+                {value: 'enttec-dmx-usb-pro', option: 'Enttec DMX USB PRO'}
+              ]}
+              onChange={this.handleChangeInterfaceDevice.bind(this)}
+              value={this.state.interfaceName}
+            />
 
-        <Select
-          disabled={this.state.interfaceName === "simulator"}
-          defaultOption={"Select an interface port..."}
-          options={this.state.interfacePorts.map(port => (
-            {value: port.path, option: port.path}
-          ))}
-          onChange={this.handleChangePort.bind(this)}
-          value={this.state.interfacePort}
-        />
+            <Select
+              disabled={this.state.interfaceName === "simulator"}
+              defaultOption={"Select an interface port..."}
+              options={this.state.interfacePorts.map(port => (
+                {value: port.path, option: port.path}
+              ))}
+              onChange={this.handleChangePort.bind(this)}
+              value={this.state.interfacePort}
+            />
+          </div>
+        </div>
 
-        {renderFixtures(this.state.patch, this.state.universe)}
+        <div className={'device-wrapper'}>
+          {renderDevices(this.state.devices)}
+        </div>
+
+        {/*{renderFixtures(this.state.patch, this.state.universe)}*/}
       </div>
     );
   }
@@ -130,6 +143,14 @@ const renderFixtures = (fixtures, universe) => {
 
   return fixtureComponents;
 }
+
+
+// Accepts a dmxus patch and a universe object, returns an array of fixture components
+const renderDevices = (devices) => {
+  return devices.map((device) => (
+    <div className={`device ${device.startAddress ? 'isRegistered' : ''}`}>{device.id}</div>
+  ));
+};
 
 // Generic select dropdown component
 const Select = props => (

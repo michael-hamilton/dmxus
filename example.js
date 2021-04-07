@@ -19,9 +19,9 @@ d.patchFixture(1, dmxus.getFixtureProfile('RGBW'));
 // Add fixtures to a group
 d.addFixtureToGroup('group1', 1);
 
-d.addDevice(1, 1, dmxus.getFixtureProfile('RGBW'))
-d.addDevice(2, 5, dmxus.getFixtureProfile('RGBW'))
-d.addDevice(3, 9, dmxus.getFixtureProfile('RGBW'))
+d.addDevice(1, 1, dmxus.getFixtureProfile('RGBW'), 'Test Device 1')
+d.addDevice(2, 5, dmxus.getFixtureProfile('RGBW'), 'Test Device 2')
+d.addDevice(3, 9, dmxus.getFixtureProfile('RGBW'), 'Test Device 3')
 
 
 // Keys are a standardized parameter name, value is a hex value (0 - 255)

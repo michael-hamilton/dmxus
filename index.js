@@ -22,6 +22,8 @@ class DMXUS extends EventEmitter {
     this.server = null;
     this.timers = {};
     this.universe = Buffer.alloc(513, 0);
+
+    this.initDevices();
   }
 
 
@@ -31,6 +33,16 @@ class DMXUS extends EventEmitter {
     this.server.init();
   }
 
+  initDevices(deviceCount = 128) {
+    for(let i = 0; i < deviceCount; i++) {
+      this.devices[i] = {
+        id: i + 1,
+        deviceName: null,
+        startAddress: null,
+        profile: null
+      }
+    }
+  }
 
   // Returns a list of serial ports as reported by the system
   async listPorts() {
@@ -46,15 +58,18 @@ class DMXUS extends EventEmitter {
   }
 
 
-  // Accepts a deviceIndex, start address and a fixture profile object, and adds the fixture to the device list.  Returns the device object.
-  addDevice(deviceIndex, startAddress, profile) {
-    const device = {
+  // Accepts a deviceId, start address and a fixture profile object, and adds the fixture to the device list.  Returns the device object.
+  addDevice(deviceId, startAddress, profile, deviceName) {
+    const newDevice = {
+      deviceName,
       startAddress,
       profile
     };
 
-    this.devices[deviceIndex] = device;
-    return device;
+    const deviceIndex = this.devices.findIndex(device => device.id === deviceId);
+
+    this.devices[deviceIndex] = {...this.devices[deviceIndex], ...newDevice};
+    return this.devices[deviceIndex];
   }
 
 
@@ -176,6 +191,12 @@ class DMXUS extends EventEmitter {
   // Returns the patch
   getPatch() {
     return this.patch;
+  }
+
+
+  // Returns the device list
+  getDevices() {
+    return this.devices;
   }
 
 
