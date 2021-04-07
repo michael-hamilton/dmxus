@@ -5,8 +5,7 @@ const dmxus = require('./index');
 
 
 // Create an instance of dmxus with an interface and port
-const d = new dmxus('enttec-dmx-usb-pro', '/dev/tty.usbserial-EN288085');
-// const d = new dmxus('simulator', '');
+const d = new dmxus('simulator', '');
 
 
 // Initialize webserver - default http://localhost:9090
