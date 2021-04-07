@@ -5,7 +5,8 @@ const dmxus = require('./index');
 
 
 // Create an instance of dmxus with the correct port
-const d = new dmxus('enttec-dmx-usb-pro', '/dev/tty.usbserial-EN288085');
+// const d = new dmxus('enttec-dmx-usb-pro', '/dev/tty.usbserial-EN288085');
+const d = new dmxus('simulator');
 
 
 // Initialize server
@@ -17,6 +18,10 @@ d.patchFixture(1, dmxus.getFixtureProfile('RGBW'));
 
 // Add fixtures to a group
 d.addFixtureToGroup('group1', 1);
+
+d.addDevice(1, 1, dmxus.getFixtureProfile('RGBW'))
+d.addDevice(2, 5, dmxus.getFixtureProfile('RGBW'))
+d.addDevice(3, 9, dmxus.getFixtureProfile('RGBW'))
 
 
 // Keys are a standardized parameter name, value is a hex value (0 - 255)

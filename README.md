@@ -29,6 +29,8 @@ const universe = new dmxus("enttec-dmx-usb-pro", "/dev/tty.usbserial-EN288085");
 
 At the moment, dmxus only comes with support for the Enttec DMX USB Pro interface. Drivers can be registered in `drivers/index.js`. See `drivers/enttec-dmx-usb-pro-driver.js` to get an idea for how to write a driver for a different interface.
 
+There is a driver called "simulator" which allows use of dmxus without a hardware interface. See appendix for more information about ways to use this.
+
 
 #### Patching and Grouping
 
@@ -79,12 +81,16 @@ Use the `getPatch()` method to retrieve the current patch configuration.
 
 ## Server
 
-There is an (opt-in) simple webserver included for viewing the status of the universe controlled by the dmxus instance.
-Use the `initServer()` method to start a server on the default port `9090`. Optionally you can pass a port number to this method if you want to run the server on a different port.
+There is a simple (opt-in) webserver included for viewing the status of the universe controlled by the dmxus instance.
+Use the `initServer()` method to start a server on the default port `9090`. You can optionally pass a port number to this method if you want to run the server on a different port.
 
 
 
 ## Appendix
+
+
+#### Fixture Profiles
+
 Some generic profiles come standard with dmxus. If you want to patch a fixture for which a profile does not exist, use the following format in your patch object:
 ```
 {
@@ -116,13 +122,27 @@ Parameter names can be arbitrary, however for consistency it is recommended that
 * white
 
 
+#### Simulator Driver
+
+The simulator driver exposes the same `send()` and `changePort()` methods as a hardware interface driver, but by default they don't do anything.
+
+In place of a port name, you can optionally provide a custom dummy SerialPort instance used within the driver:
+```
+{
+  isOpen: bool,
+  close: function,
+  write: function,
+}
+```
+
+
 
 ## Contributing
 If you find this library useful and want to contribute to it, please feel free to do so on the GitHub page. 
 
 Contributions that would be especially useful are fixture profiles as well as drivers to support other interfaces.
 
-If you have a request for help with making a profile for a specific fixture or using an unsupported interface, open an issue and we can go from there. 
+For help with making a profile for a specific fixture or using an unsupported interface, please open an issue! 
 
 
 

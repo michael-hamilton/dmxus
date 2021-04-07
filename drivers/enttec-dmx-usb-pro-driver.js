@@ -32,6 +32,7 @@ class EnttecDmxUsbProDriver {
     this.port.write(data);
   }
 
+  // Accepts a port name and re-initializes this.port with a new SerialPort instance
   changePort(port) {
     if(this.port.isOpen) {
       this.port.close();

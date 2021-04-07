@@ -26,10 +26,11 @@ class Server {
     this.io.on('connection', (socket) => {
       console.log('dmxus client connected')
 
+      socket.emit('interfaceName', this.dmxus.getDriverName());
       socket.emit('patch', this.dmxus.getPatch());
-      socket.emit('port', this.dmxus.getPort());
-      socket.on('getPorts', async () => socket.emit('ports', await this.dmxus.listPorts()));
-      socket.on('changePort', (port) => this.dmxus.changeInterfacePort(port));
+      socket.emit('interfacePort', this.dmxus.getInterfacePort());
+      socket.on('getPorts', async () => socket.emit('interfacePorts', await this.dmxus.listPorts()));
+      socket.on('initializeInterface', (interfaceName, interfacePort) => this.dmxus.reinitializeDriver(interfaceName, interfacePort));
 
       this.dmxus.on('update', (universe) => socket.emit('update', universe));
     });

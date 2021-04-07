@@ -6,6 +6,10 @@ const Driver = (driverName) => {
       console.log("Using driver enttec-dmx-usb-pro");
       return require('./enttec-dmx-usb-pro-driver');
 
+    case "simulator":
+      console.log("Using driver simulator");
+      return require('./simulator');
+
     default:
       console.log("No driver found");
       return false;

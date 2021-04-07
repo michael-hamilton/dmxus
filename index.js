@@ -8,7 +8,7 @@ const profiles = require('./profiles');
 
 class DMXUS extends EventEmitter {
 
-  constructor(driverName, interfacePort) {
+  constructor(driverName, interfacePort = '') {
     super();
 
     this.devices = [];
@@ -38,14 +38,27 @@ class DMXUS extends EventEmitter {
   }
 
 
-  // Changes the serial port used by the driver
-  changeInterfacePort(interfacePort) {
+  // Re-initializes the interface
+  reinitializeDriver(driverName, interfacePort) {
     this.interfacePort = interfacePort;
-    this.driver.changePort(interfacePort);
+    this.driverName = driverName;
+    this.driver = new (Driver(driverName))(interfacePort);
   }
 
 
-  // Accepts a start address and a fixture profile object, and adds the fixture to the the patch.  Returns the start address of the patched fixture.
+  // Accepts a deviceIndex, start address and a fixture profile object, and adds the fixture to the device list.  Returns the device object.
+  addDevice(deviceIndex, startAddress, profile) {
+    const device = {
+      startAddress,
+      profile
+    };
+
+    this.devices[deviceIndex] = device;
+    return device;
+  }
+
+
+  // Accepts a start address and a fixture profile object, and adds the fixture to the patch.  Returns the start address of the patched fixture.
   patchFixture(startAddress, profile) {
     this.patch[startAddress] = profile;
     return startAddress;
@@ -127,18 +140,6 @@ class DMXUS extends EventEmitter {
   }
 
 
-  // Returns the patch
-  getPatch() {
-    return this.patch;
-  }
-
-
-  // Sets the patch
-  setPatch(patch) {
-    this.patch = patch;
-  }
-
-
   // Returns the profile of the fixture patched at the provided start address
   getPatchedFixtureProfile(startAddress) {
     return this.patch[startAddress];
@@ -160,9 +161,27 @@ class DMXUS extends EventEmitter {
   }
 
 
-  // Returns the interfacePort currently used dmxus
-  getPort() {
+  // Returns the interfacePort currently used by dmxus
+  getInterfacePort() {
     return this.interfacePort;
+  }
+
+
+  // Returns the driver currently used by dmxus
+  getDriverName() {
+    return this.driverName;
+  }
+
+
+  // Returns the patch
+  getPatch() {
+    return this.patch;
+  }
+
+
+  // Sets the patch
+  setPatch(patch) {
+    this.patch = patch;
   }
 
 
@@ -180,7 +199,7 @@ class DMXUS extends EventEmitter {
   }
 
 
-  // Utility method that returns a random value from 0-255
+  // Returns a random integer value from 0-255
   static getRandom8BitValue() {
     return Math.floor(Math.random() * 255);
   }
