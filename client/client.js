@@ -13,7 +13,9 @@ class Client extends Component {
       interfaceName: '',
       interfacePort: '',
       interfacePorts: [],
-      page: 0,
+      selectedDevice: null,
+      showEditor: false,
+      tab: 0,
       universe: [],
     };
 
@@ -64,9 +66,13 @@ class Client extends Component {
     this.socket.emit('initializeInterface', this.state.interfaceName, interfacePort);
   }
 
+  toggleEditor(selectedDevice) {
+    this.setState({showEditor: !this.state.showEditor, selectedDevice})
+  }
+
   render() {
     return (
-      <div className={'app-wrapper'}>
+      <div className={`app-wrapper`}>
         <div className={'header'}>
           <h1 className={'app-title'}>dmxus client</h1>
 
@@ -94,22 +100,22 @@ class Client extends Component {
         </div>
 
         <div className={'tab-navigation'}>
-          <button className={`tab-button ${this.state.page === 0 ? 'active' : ''}`} onClick={() => this.setState({page: 0})}>Devices</button>
-          <button className={`tab-button ${this.state.page === 1 ? 'active' : ''}`} onClick={() => this.setState({page: 1})}>Universe</button>
+          <button className={`tab-button ${this.state.tab === 0 ? 'active' : ''}`} onClick={() => this.setState({tab: 0})}>Devices</button>
+          <button className={`tab-button ${this.state.tab === 1 ? 'active' : ''}`} onClick={() => this.setState({tab: 1})}>Universe</button>
         </div>
 
         {
-          this.state.page === 0 ? (
+          this.state.tab === 0 ? (
             <div className={'content-wrapper'}>
               <div className={'devices'}>
-                {renderDevices(this.state.devices, this.state.universe)}
+                {renderDevices(this.state.devices, this.state.universe, this.toggleEditor.bind(this))}
               </div>
             </div>
           ) : null
         }
 
         {
-          this.state.page === 1 ? (
+          this.state.tab === 1 ? (
             <div className={'content-wrapper'}>
               <div className={'universe'}>
                 {renderUniverse(this.state.universe)}
@@ -117,31 +123,28 @@ class Client extends Component {
             </div>
           ) : null
         }
+
+        {
+          this.state.showEditor ? <Editor toggleEditor={this.toggleEditor.bind(this)} device={this.state.selectedDevice} /> : null
+        }
       </div>
     );
   }
 }
 
 // Accepts a list of dmxus devices and a universe object and renders a grid of devices
-const renderDevices = (devices, universe) => {
+const renderDevices = (devices, universe, toggleEditor) => {
   return devices.map((device) => {
     const _a = parseInt(device.startAddress);
-    let backgroundColor;
+    let color;
 
     if(device.profile) {
       const _p = device.profile.parameters;
-
-      backgroundColor = `rgb(${universe[_a + _p.indexOf('red')]}, ${universe[_a + _p.indexOf('green')]}, ${universe[_a + _p.indexOf('blue')]})`;
+      color = `rgb(${universe[_a + _p.indexOf('red')]}, ${universe[_a + _p.indexOf('green')]}, ${universe[_a + _p.indexOf('blue')]})`;
     }
 
-    return (
-      <div
-        className={`device ${device.startAddress ? 'isRegistered' : ''}`}
-        style={{backgroundColor}}
-      >
-        <span className={'deviceId'}>{device.id}</span>
-      </div>
-  )});
+    return <Device key={device.id} color={color} device={device} toggleEditor={toggleEditor} />;
+  });
 };
 
 // Accepts a universe object and renders addresses with their corresponding values
@@ -168,5 +171,58 @@ const Select = props => (
     }
   </select>
 );
+
+// Device component
+class Device extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <div>
+        <div
+          className={`device ${this.props.device.startAddress ? 'isRegistered' : ''}`}
+          onClick={() => this.props.toggleEditor(this.props.device)}
+          style={{backgroundColor: this.props.color}}
+        >
+          <span className={'deviceId'}>{this.props.device.id}</span>
+        </div>
+      </div>
+    )
+  }
+}
+
+
+// Editor component
+class Editor extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <div className={'editor-wrapper'}>
+        <div className={'editor'}>
+          <button className={'close'} onClick={this.props.toggleEditor}>x</button>
+          <div className={'device-details'}>
+            <p><span>Device ID:</span> {this.props.device.id}</p>
+            <p><span>Start Address:</span> {this.props.device.startAddress || 'not set'}</p>
+            {
+              this.props.device.profile && this.props.device.profile.type && this.props.device.profile.description ?
+                <p><span>Profile:</span> {this.props.device.profile.type} ({this.props.device.profile.description})</p>
+                : <p><span>Profile:</span> not set</p>
+            }
+            {
+              this.props.device.profile && this.props.device.profile.parameters ?
+                <p><span>Parameters:</span> {this.props.device.profile.parameters.join(', ')}</p>
+                : <p><span>Parameters:</span> none</p>
+            }
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
 
 export default Client;
