@@ -34,7 +34,7 @@ There is a driver called "simulator" which allows use of dmxus without a hardwar
 
 #### Devices
 
-Devices are how dmxus represents lighting fixtures. dmxus by default can manage and control up to 96 devices. To add a device, use the `addDevice()` method. 
+Lighting fixtures are represented by dmxus as devices. dmxus by default can manage and control up to 96 devices. To add a device, use the `addDevice()` method. 
 The first parameter is the device's ID (1-96), the second is the device start address (1-512), the third is a device profile object (see appendix for the shape of this object), the fourth is an optional device name, and the fifth is an optional array of group names.
 dmxus also includes a utility method `getDeviceProfile()` for retrieving pre-existing device profiles.
 ```
@@ -64,7 +64,7 @@ To update all the devices at once, call the `updateAllDevices()` method, passing
 
 ## Utilities
 
-dmxus provides a few misc utility functions that are useful for things like persisting data of a dmxus instance or for retrieving device profiles.
+dmxus provides a few misc utility functions that are useful for things like persisting dmxus instance data or for retrieving device profiles.
 
 Use the `getDevices()` method to retrieve the current list of devices.
 
@@ -84,7 +84,7 @@ Interfaces can be selected with the dropdown, and serial port selection for inte
 
 The devices tab shows all the devices and their statuses (namely color). Clicking on a device will show some more details about the device such as start address, device profile, device parameters, and any groups which the device belongs to.
 
-The universe tab shows the status of all 512 channels in the dmx universe controller by dmxus. Gray numbers represent an address while red numbers (0-255) represent the DMX value at that address. 
+The universe tab shows the status of all 512 channels in the dmx universe controlled by dmxus. Gray numbers represent an address while red numbers (0-255) represent the DMX value at that address. 
 
 
 ## Appendix
