@@ -236,13 +236,18 @@ class Editor extends Component {
             </p>
             {
               this.props.device.profile && this.props.device.profile.type && this.props.device.profile.description ?
-                <p><span>Profile:</span> {this.props.device.profile.type} ({this.props.device.profile.description})</p>
-                : <p><span>Profile:</span> not set</p>
+                <p><span>Fixture Profile:</span> {this.props.device.profile.type} ({this.props.device.profile.description})</p>
+                : <p><span>Fixture Profile:</span> not set</p>
             }
             {
               this.props.device.profile && this.props.device.profile.parameters ?
-                <p><span>Parameters:</span> {this.props.device.profile.parameters.join(', ')}</p>
-                : <p><span>Parameters:</span> none</p>
+                <p><span>Fixture Parameters:</span> {this.props.device.profile.parameters.join(', ')}</p>
+                : <p><span>Fixture Parameters:</span> none</p>
+            }
+            {
+              this.props.device.groups.length ?
+                <p><span>Groups:</span> {this.props.device.groups.join(', ')}</p>
+                : null
             }
           </div>
         </div>
