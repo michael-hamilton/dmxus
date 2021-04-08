@@ -31,7 +31,10 @@ class Server {
       socket.emit('interfacePort', this.dmxus.getInterfacePort());
       socket.on('getPorts', async () => socket.emit('interfacePorts', await this.dmxus.listPorts()));
       socket.on('initializeInterface', (interfaceName, interfacePort) => this.dmxus.reinitializeDriver(interfaceName, interfacePort));
-
+      socket.on('changeDeviceStartAddress', (deviceId, startAddress) => {
+        this.dmxus.changeDeviceStartAddress(deviceId, startAddress);
+        socket.emit('devices', this.dmxus.getDevices());
+      });
       this.dmxus.on('update', (universe) => socket.emit('update', universe));
     });
 

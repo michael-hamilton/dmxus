@@ -60,6 +60,10 @@ class Client extends Component {
     }
   }
 
+  handleChangeDeviceAddress(deviceId, startAddress) {
+    this.socket.emit('changeDeviceStartAddress', deviceId, startAddress);
+  }
+
   handleChangePort(event) {
     const interfacePort = event.target.value;
     this.setState({interfacePort})
@@ -78,7 +82,7 @@ class Client extends Component {
 
           <div className={'interface-selection-wrapper'}>
             <Select
-              defaultOption={"Select an interface..."}
+              defaultOption={'Select an interface...'}
               options={[
                 {value: 'simulator', option: 'Simulator'},
                 {value: 'enttec-dmx-usb-pro', option: 'Enttec DMX USB PRO'}
@@ -88,8 +92,8 @@ class Client extends Component {
             />
 
             <Select
-              disabled={this.state.interfaceName === "simulator"}
-              defaultOption={"Select an interface port..."}
+              disabled={this.state.interfaceName === 'simulator'}
+              defaultOption={'Select an interface port...'}
               options={this.state.interfacePorts.map(port => (
                 {value: port.path, option: port.path}
               ))}
@@ -108,7 +112,7 @@ class Client extends Component {
           this.state.tab === 0 ? (
             <div className={'content-wrapper'}>
               <div className={'devices'}>
-                {renderDevices(this.state.devices, this.state.universe, this.toggleEditor.bind(this))}
+                {renderDevices(this.state.devices, this.state.universe, this.toggleEditor.bind(this), this.handleChangeDeviceAddress.bind(this))}
               </div>
             </div>
           ) : null
@@ -125,7 +129,7 @@ class Client extends Component {
         }
 
         {
-          this.state.showEditor ? <Editor toggleEditor={this.toggleEditor.bind(this)} device={this.state.selectedDevice} /> : null
+          this.state.showEditor ? <Editor toggleEditor={this.toggleEditor.bind(this)} device={this.state.selectedDevice} changeStartAddress={this.handleChangeDeviceAddress.bind(this)} /> : null
         }
       </div>
     );
@@ -198,6 +202,20 @@ class Device extends Component {
 class Editor extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      deviceStartAddress: ''
+    }
+  }
+
+  componentDidMount() {
+    this.setState({deviceStartAddress: this.props.device.startAddress})
+  }
+
+  handleChangeAddress(e) {
+    const deviceStartAddress = e.target.value;
+    this.props.changeStartAddress(this.props.device.id, deviceStartAddress);
+    this.setState({deviceStartAddress})
   }
 
   render() {
@@ -207,7 +225,15 @@ class Editor extends Component {
           <button className={'close'} onClick={this.props.toggleEditor}>x</button>
           <div className={'device-details'}>
             <p><span>Device ID:</span> {this.props.device.id}</p>
-            <p><span>Start Address:</span> {this.props.device.startAddress || 'not set'}</p>
+            <p>
+              <span>Start Address:</span>
+              <Select
+                defaultOption={'Select an address...'}
+                onChange={this.handleChangeAddress.bind(this)}
+                options={addressOptions()}
+                value={this.state.deviceStartAddress || ''}
+              />
+            </p>
             {
               this.props.device.profile && this.props.device.profile.type && this.props.device.profile.description ?
                 <p><span>Profile:</span> {this.props.device.profile.type} ({this.props.device.profile.description})</p>
@@ -223,6 +249,16 @@ class Editor extends Component {
       </div>
     )
   }
+}
+
+const addressOptions = () => {
+  const addresses = [];
+
+  for(let i = 1; i <= 512; i++) {
+    addresses[i] = {value: i, option: i}
+  }
+
+  return addresses;
 }
 
 export default Client;

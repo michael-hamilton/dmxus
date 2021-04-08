@@ -87,6 +87,15 @@ class DMXUS extends EventEmitter {
   }
 
 
+  changeDeviceStartAddress(deviceId, startAddress) {
+    const deviceIndex = this.devices.findIndex(device => device.id === deviceId);
+    this.devices[deviceIndex].startAddress = startAddress;
+
+    console.log(this.devices[deviceIndex]);
+
+    return this.devices[deviceIndex];
+  }
+
   // Updates all fixtures with the provided parameters.
   updateAllDevices(parameters) {
     this.devices.forEach(device => {
