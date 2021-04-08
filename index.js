@@ -56,7 +56,7 @@ class DMXUS extends EventEmitter {
   }
 
 
-  // Accepts a deviceId, start address and a fixture profile object, and adds the fixture to the device list.  Returns the device object.
+  // Accepts a deviceId, start address and a device profile object, and adds the device to the device list.  Returns the device object.
   addDevice(deviceId, startAddress, profile, deviceName = '', groups = []) {
     const newDevice = {
       deviceName,
@@ -73,7 +73,7 @@ class DMXUS extends EventEmitter {
   }
 
 
-  // Updates a single fixture at the provided start address with the provided parameters.
+  // Updates a single device at the provided start address with the provided parameters.
   updateDevice(deviceId, parameters) {
     const device = this.getDeviceById(deviceId);
 
@@ -91,12 +91,10 @@ class DMXUS extends EventEmitter {
     const deviceIndex = this.devices.findIndex(device => device.id === deviceId);
     this.devices[deviceIndex].startAddress = startAddress;
 
-    console.log(this.devices[deviceIndex]);
-
     return this.devices[deviceIndex];
   }
 
-  // Updates all fixtures with the provided parameters.
+  // Updates all devices with the provided parameters.
   updateAllDevices(parameters) {
     this.devices.forEach(device => {
       this.updateDevice(device.id, parameters);
@@ -120,7 +118,7 @@ class DMXUS extends EventEmitter {
   }
 
 
-  // Updates all fixtures in the provided group name with the provided parameters.
+  // Updates all devices in the provided group name with the provided parameters.
   updateAllDevicesInGroup(groupName, parameters, fadeIn = 0) {
     const oldDeviceParameterValues = {};
     const devices = this.getDevicesByGroup(groupName);
@@ -212,7 +210,7 @@ class DMXUS extends EventEmitter {
 
 
   // Returns the device profile of the provided profile name
-  static getFixtureProfile(profileName) {
+  static getDeviceProfile(profileName) {
     return profiles[profileName];
   }
 

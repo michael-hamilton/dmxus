@@ -13,10 +13,10 @@ d.initWebServer();
 
 
 // Add devices
-d.addDevice(1, 1, dmxus.getFixtureProfile('RGBW'), 'Test Device 1', ['group']);
-d.addDevice(2, 6, dmxus.getFixtureProfile('RGBW'), 'Test Device 2', ['group']);
-d.addDevice(3, 11, dmxus.getFixtureProfile('RGBW'), 'Test Device 3', ['group']);
-d.addDevice(4, 16, dmxus.getFixtureProfile('RGBW'), 'Test Device 4', ['group']);
+d.addDevice(1, 1, dmxus.getDeviceProfile('RGBW'), 'Test Device 1', ['group']);
+d.addDevice(2, 6, dmxus.getDeviceProfile('RGBW'), 'Test Device 2', ['group']);
+d.addDevice(3, 11, dmxus.getDeviceProfile('RGBW'), 'Test Device 3', ['group']);
+d.addDevice(4, 16, dmxus.getDeviceProfile('RGBW'), 'Test Device 4', ['group']);
 
 
 // Keys are a standardized parameter name, value is a hex value (0 - 255)
@@ -28,13 +28,13 @@ const initParameters = {
 };
 
 
-// Update all the fixtures in the universe with the provided parameters
+// Update all the devices in the universe with the provided parameters
 d.updateAllDevices(initParameters);
 
 
 // Loop every 5 seconds
 setInterval(() => {
-  // Update all the fixtures in the group with the provided parameters
+  // Update all the devices in the group with the provided parameters
   d.updateAllDevicesInGroup('group', {
     red: dmxus.getRandom8BitValue(),
     green: dmxus.getRandom8BitValue(),

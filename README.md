@@ -16,7 +16,7 @@ dmxus works on Windows, Mac, and Linux and should be compatible with all active/
 
 ## Usage
 
-Require the library as you would any node module. Instantiate the class by passing in the name of the driver to use, and the name or path of the port of the DMX interface.  Each instance of dmxus is capable of controlling a single 512 channel DMX universe.
+Require the library as you would any node module. Instantiate the class by passing in the name of the driver to use, and the name or path of the port for the DMX interface.  Each instance of dmxus is capable of controlling a single 512 channel DMX universe.
 ```
 const dmxus = require("dmxus");
 
@@ -27,27 +27,24 @@ const universe = new dmxus("enttec-dmx-usb-pro", "COM6");
 const universe = new dmxus("enttec-dmx-usb-pro", "/dev/tty.usbserial-EN288085");
 ```
 
-At the moment, dmxus only comes with support for the Enttec DMX USB Pro interface. Drivers can be registered in `drivers/index.js`. See `drivers/enttec-dmx-usb-pro-driver.js` to get an idea for how to write a driver for a different interface.
+At the moment, dmxus only comes with support for the Enttec DMX USB Pro interface. Additional drivers can be registered in `drivers/index.js`. See `drivers/enttec-dmx-usb-pro-driver.js` to get an idea for how to write a driver for a different interface.
 
 There is a driver called "simulator" which allows use of dmxus without a hardware interface. See appendix for more information about ways to use this.
 
 
-#### Patching and Grouping
+#### Devices
 
-Patch fixtures using the `patchFixture()` method. The first parameter is the start address of the fixture to be patched, and the second is a fixture profile object (see appendix for the shape of this object). dmxus also includes a utility method `getFixtureProfile()` for retrieving pre-existing fixture profiles.
+Devices are how dmxus represents lighting fixtures. dmxus by default can manage and control up to 96 devices. To add a device, use the `addDevice()` method. 
+The first parameter is the device's ID (1-96), the second is the device start address (1-512), the third is a device profile object (see appendix for the shape of this object), the fourth is an optional device name, and the fifth is an optional array of group names.
+dmxus also includes a utility method `getDeviceProfile()` for retrieving pre-existing device profiles.
 ```
-universe.patchFixture(1, dmxus.getFixtureProfile("IRGB"));
-```
-
-Fixtures can be grouped using the `addFixtureToGroup()` method. Pass in a group name and the starting address of the fixture to add the fixture to the group.
-```
-universe.addFixtureToGroup("group", 1);
+universe.addDevice(1, 1, dmxus.getDeviceProfile("IRGB"), "Test Device", ["group"]);
 ```
 
 
-#### Updating Fixtures
+#### Updating Devices
 
-dmxus provides a few methods for updating fixtures.  All methods for updating fixtures expect a parameters object that defines what fixture parameters should update. The object's keys are the names of the parameter to control (see appendix for standardized parameter names), and values are a hex value (0 - 255).
+dmxus provides a few methods for controlling a device.  All methods for updating devices expect a parameters object that defines what device parameters should update. The object's keys are the names of the parameter to control (see appendix for standardized parameter names), and values are a hex value (0 - 255).
 ```
 const parameters = {
     "intensity": 255,
@@ -56,42 +53,45 @@ const parameters = {
     "blue": 255
 };
 ```
-  
 
-To update a single fixture, call the `updateSingleFixture()` method, passing in the fixture start address and parameters to update on the fixture.
+To update a single device, call the `updateDevice()` method, passing in the deviceId and parameters to update on the device.
 
-To update all of the fixtures in a group, call the `updateAllFixturesInGroup()` method, passing in a group name and parameters to update on the fixtures in the group. This method accepts an optional third parameter for defining the number of milliseconds to fade into the new scene.
+To update all the devices in a group, call the `updateAllDevicesInGroup()` method, passing in a group name and parameters to update on the devices in the group. This method accepts an optional third parameter for defining the number of milliseconds to fade into the new scene.
 
-To update all of the fixtures in the DMX universe, call the `updateAllFixtures()` method, passing in parameters to update on all of the fixtures.
+To update all the devices at once, call the `updateAllDevices()` method, passing in parameters to update on all of the devices.
 
 
 
 ## Utilities
 
-dmxus provides a few misc utility functions that are useful for things like persisting patch data of a dmxus instance or for retrieving device profiles.
+dmxus provides a few misc utility functions that are useful for things like persisting data of a dmxus instance or for retrieving device profiles.
 
-Use the `getPatch()` method to retrieve the current patch configuration.
-`setPatch()` accepts an object of the same shape as that returned from `getPatch()`, and sets the dmxus instance's patch accordingly.
+Use the `getDevices()` method to retrieve the current list of devices.
 
-`getPatchedFixtureProfile()` accepts a start address and returns the profile of the fixture patched at that address.
+Use the `getDeviceById()` method passing in a deviceId to retrieve the device at the specified id.
 
-`getRandom8BitValue()` returns a random decimal value from 0-255;
+Use the `getDevicesByGroup()` method passing in a group name to retrieve the devices belonging to the specified group.
+
+`getRandom8BitValue()` returns a random decimal value from 0-255. This is a static method that can be run outside the context of a dmxus instance. 
 
 
 
-## Server
+## Web Client
 
-There is a simple (opt-in) webserver included for viewing the status of the universe controlled by the dmxus instance.
-Use the `initWebServer()` method to start a server on the default port `9090`. You can optionally pass a port number to this method if you want to run the server on a different port.
+There is a simple (opt-in) web client that provides a visual interface for access to some basic dmxus features. Use the `initWebServer()` method to start a server on the default port `9090`. You can optionally pass a port number to this method if you want to run the server on a different port.
 
+Interfaces can be selected with the dropdown, and serial port selection for interfaces other than Simulator.
+
+The devices tab shows all the devices and their statuses (namely color). Clicking on a device will show some more details about the device such as start address, device profile, device parameters, and any groups which the device belongs to.
+
+The universe tab shows the status of all 512 channels in the dmx universe controller by dmxus. Gray numbers represent an address while red numbers (0-255) represent the DMX value at that address. 
 
 
 ## Appendix
 
+#### Device Profiles
 
-#### Fixture Profiles
-
-Some generic profiles come standard with dmxus. If you want to patch a fixture for which a profile does not exist, use the following format in your patch object:
+Some generic profiles come standard with dmxus. If you want to add a device for which a profile does not exist, use the following format in your device profile object:
 ```
 {
     "description": "4 channel rgb fixture with intensity",
@@ -103,9 +103,9 @@ Some generic profiles come standard with dmxus. If you want to patch a fixture f
     ]
 }
 ```
-The order of the profile's list of parameters is important and should correspond to the respective channels on the fixture. Existing profiles can be found in `profiles.json` at the root of the dmxus repo.
+The order of the profile's list of parameters is important and should correspond to the respective channels on the device. Existing profiles can be found in `profiles.json` at the root of the dmxus repo.
 
-Parameter names can be arbitrary, however for consistency it is recommended that you follow industry standard names such as:
+Parameter names can be arbitrary, however for consistency it is recommended that you use the same names across your profiles. Some standard parameter names commonly found in the industry are:
 * amber
 * beam
 * blue
@@ -138,15 +138,17 @@ In place of a port name, you can optionally provide a custom dummy SerialPort in
 
 
 ## Contributing
+
 If you find this library useful and want to contribute to it, please feel free to do so on the GitHub page. 
 
-Contributions that would be especially useful are fixture profiles as well as drivers to support other interfaces.
+Contributions that would be especially useful are device profiles as well as drivers to support other interfaces.
 
-For help with making a profile for a specific fixture or using an unsupported interface, please open an issue! 
+For help with making a profile for a specific device or using an unsupported interface, please open an issue! 
 
 
 
 ## License
+
 Released under the MIT license - do whatever you wish with it and have fun!
 
 _**dmxus is pre 1.0.0**_ - If you do find yourself using it, please keep in mind things may become incompatible between versions.
