@@ -1,6 +1,6 @@
 {
   "name": "dmxus",
-  "version": "0.8.3",
+  "version": "0.8.4-alpha.0",
   "description": "A high level Javascript library for controlling lighting fixtures via DMX.",
   "main": "index.js",
   "scripts": {
