@@ -1703,7 +1703,7 @@ babel-preset-env@^1.7.0:
     invariant "^2.2.2"
     semver "^5.3.0"
 
-babel-preset-react@^7.0.0:
+babel-preset-react@^7.0.0-beta.3:
   version "7.0.0-beta.3"
   resolved "https://registry.yarnpkg.com/babel-preset-react/-/babel-preset-react-7.0.0-beta.3.tgz#3a6453e0a5e6156d9528590b629a70ecd9d50226"
   integrity sha512-q3JvWwz52o7JPxNYxYQ+BkMAYmiwlorpN7SXTQ/a+zqDtIuVtM/rDq9GIYgs7l5hRs3bR5h2ImNKu8s0T7moYw==
