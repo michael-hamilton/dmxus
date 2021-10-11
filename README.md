@@ -74,6 +74,10 @@ Use the `getDevicesByGroup()` method passing in a group name to retrieve the dev
 
 `getRandom8BitValue()` returns a random decimal value from 0-255. This is a static method that can be run outside the context of a dmxus instance. 
 
+`getUniverseState()` returns the JSON value of the current universe state. 
+
+dmxus is best suited for manipulating devices, however individual address values can be manipulated with the `updateAddressValue()` method by passing in an address and a dmx value. For single address devices, consider using a device assigned with the `Dimmer` profile. 
+
 
 
 ## Web Client
@@ -82,9 +86,11 @@ There is a simple (opt-in) web client that provides a visual interface for acces
 
 Interfaces can be selected with the dropdown, and serial port selection for interfaces other than Simulator.
 
-The devices tab shows all the devices and their statuses (namely color). Clicking on a device will show some more details about the device such as start address, device profile, device parameters, and any groups which the device belongs to.
+The Devices tab shows all the devices and their statuses (namely color). Clicking on a device will show some more details about the device such as start address, device profile, device parameters, and any groups which the device belongs to.
 
-The universe tab shows the status of all 512 channels in the dmx universe controlled by dmxus. Gray numbers represent an address while red numbers (0-255) represent the DMX value at that address. 
+The Universe tab shows the status of all 512 addresses in the dmx universe controlled by dmxus. Gray numbers represent an address while red numbers (0-255) represent the DMX value at that address.
+
+The Virtual Console tab allows individual control of all 512 addresses in the universe. The sliders can be adjusted to change the value at a specific address.
 
 
 ## Appendix
@@ -134,6 +140,11 @@ In place of a port name, you can optionally provide a custom dummy SerialPort in
   write: function,
 }
 ```
+
+
+#### Running From Source
+
+After cloning the repo, run `npm install`. dmxus relies on the [Node SerialPort](https://serialport.io/) in order to communicate with DMX interfaces. This library relies on native modules to work correctly. Please consult their documentation if you run into any issues.
 
 
 

@@ -8,7 +8,7 @@ const profiles = require('./profiles');
 
 class DMXUS extends EventEmitter {
 
-  constructor(driverName, interfacePort = '') {
+  constructor(driverName, interfacePort = '', deviceCount = 96) {
     super();
 
     this.devices = [];
@@ -22,7 +22,7 @@ class DMXUS extends EventEmitter {
     this.timers = {};
     this.universe = Buffer.alloc(513, 0);
 
-    this.initDevices();
+    this.initDevices(deviceCount);
   }
 
 
@@ -34,7 +34,7 @@ class DMXUS extends EventEmitter {
 
 
   // Initializes the device list with a default count of 96 devices
-  initDevices(deviceCount = 96) {
+  initDevices(deviceCount) {
     for(let i = 0; i < deviceCount; i++) {
       this.devices[i] = {
         id: i + 1,
@@ -73,6 +73,14 @@ class DMXUS extends EventEmitter {
   }
 
 
+  // Accepts a DMX address and updates with the provided value.
+  updateAddressValue(address, value) {
+    this.universe[parseInt(address)] = value;
+
+    this.update();
+  }
+
+
   // Updates a single device at the provided start address with the provided parameters.
   updateDevice(deviceId, parameters) {
     const device = this.getDeviceById(deviceId);
@@ -86,7 +94,7 @@ class DMXUS extends EventEmitter {
     this.update();
   }
 
-
+  // Changes the start address of the specified deviceId
   changeDeviceStartAddress(deviceId, startAddress) {
     const deviceIndex = this.devices.findIndex(device => device.id === deviceId);
     this.devices[deviceIndex].startAddress = startAddress;
@@ -206,6 +214,12 @@ class DMXUS extends EventEmitter {
     this.driver.send(this.universe);
 
     this.emit('update', this.universe.toJSON());
+  }
+
+
+  // Returns the JSON value of the current state of the universe
+  getUniverseState() {
+    return this.universe.toJSON();
   }
 
 

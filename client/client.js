@@ -1,6 +1,6 @@
 // dmxus web client
 
-import React, {Component} from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import io from 'socket.io-client';
 import './client.scss';
 
@@ -52,6 +52,7 @@ class Client extends Component {
     this.socket.offAny();
   }
 
+  // Handles changing the interface device
   handleChangeInterfaceDevice(event) {
     const interfaceName = event.target.value;
     this.setState({interfaceName, interfacePort: ''})
@@ -60,18 +61,26 @@ class Client extends Component {
     }
   }
 
+  // Handles changing the start address of the specified device
   handleChangeDeviceAddress(deviceId, startAddress) {
     this.socket.emit('changeDeviceStartAddress', deviceId, startAddress);
   }
 
+  // Handles changing the interface port
   handleChangePort(event) {
     const interfacePort = event.target.value;
     this.setState({interfacePort})
     this.socket.emit('initializeInterface', this.state.interfaceName, interfacePort);
   }
 
+  // Toggles the device editor for the specified device
   toggleEditor(selectedDevice) {
     this.setState({showEditor: !this.state.showEditor, selectedDevice})
+  }
+
+  // Handles updating the dmx at an address based on the input received from a slider
+  handleSliderChange(e) {
+    this.socket.emit('updateAddressValue', e.target.getAttribute('address'), e.target.value)
   }
 
   render() {
@@ -106,6 +115,7 @@ class Client extends Component {
         <div className={'tab-navigation'}>
           <button className={`tab-button ${this.state.tab === 0 ? 'active' : ''}`} onClick={() => this.setState({tab: 0})}>Devices</button>
           <button className={`tab-button ${this.state.tab === 1 ? 'active' : ''}`} onClick={() => this.setState({tab: 1})}>Universe</button>
+          <button className={`tab-button ${this.state.tab === 2 ? 'active' : ''}`} onClick={() => this.setState({tab: 2})}>Virtual Desk</button>
         </div>
 
         {
@@ -123,6 +133,16 @@ class Client extends Component {
             <div className={'content-wrapper'}>
               <div className={'universe'}>
                 {renderUniverse(this.state.universe)}
+              </div>
+            </div>
+          ) : null
+        }
+
+        {
+          this.state.tab === 2 ? (
+            <div className={'content-wrapper'}>
+              <div className={'desk'}>
+                {renderSliders(this.state.universe, this.handleSliderChange.bind(this))}
               </div>
             </div>
           ) : null
@@ -155,13 +175,18 @@ const renderDevices = (devices, universe, toggleEditor) => {
 const renderUniverse = (universe) => {
   return universe.slice(1).map((address, index) => {
     return (
-      <div
-        className={'address'}
-      >
+      <div className={'address'}>
         <p>{index + 1}</p>
         <p className={'value'}>{universe[index + 1]}</p>
       </div>
     )});
+};
+
+// Accepts a universe object and renders addresses with their corresponding values
+const renderSliders = (universe, onChange) => {
+  return universe.slice(1).map((address, index) =>
+    <VerticalSlider key={index} address={index + 1} value={universe[index + 1]} onChange={onChange} />
+  );
 };
 
 // Generic select dropdown component
@@ -175,6 +200,32 @@ const Select = props => (
     }
   </select>
 );
+
+// Vertical slider component
+const VerticalSlider = props => {
+  const [value, setValue] = useState(props.value);
+
+  useEffect(() => {
+    setValue(props.value);
+  }, [props.value])
+
+  return (
+    <div className={'slider-wrapper'}>
+      <p className={'value'}>{value}</p>
+      <input
+        address={props.address}
+        className={'slider'}
+        max={255}
+        min={0}
+        onChange={props.onChange}
+        orient={'vertical'}
+        type={'range'}
+        value={value}
+      />
+      <p className={'address'}>{props.address}</p>
+    </div>
+  );
+}
 
 // Device component
 class Device extends Component {
@@ -212,6 +263,7 @@ class Editor extends Component {
     this.setState({deviceStartAddress: this.props.device.startAddress})
   }
 
+  // Handles changing the start address of the device
   handleChangeAddress(e) {
     const deviceStartAddress = e.target.value;
     this.props.changeStartAddress(this.props.device.id, deviceStartAddress);
