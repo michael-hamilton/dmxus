@@ -1,12 +1,11 @@
 {
   "name": "dmxus",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "A high level Javascript library for controlling lighting fixtures via DMX.",
   "main": "index.js",
   "scripts": {
     "dev": "node example.js & parcel watch client/index.html",
-    "buildClient": "parcel build client/index.html",
-    "prepublish": "npm run buildClient"
+    "buildClient": "parcel build client/index.html"
   },
   "repository": {
     "type": "git",
