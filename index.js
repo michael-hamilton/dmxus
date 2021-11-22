@@ -102,6 +102,16 @@ class DMXUS extends EventEmitter {
     return this.devices[deviceIndex];
   }
 
+  // Changes the fixture profile of the specified deviceId
+  changeDeviceFixtureProfile(deviceId, fixtureProfileType) {
+    const deviceIndex = this.devices.findIndex(device => device.id === deviceId);
+    const fixtureProfileIndex = Object.keys(profiles).find(profile => profiles[profile].type === fixtureProfileType);
+
+    this.devices[deviceIndex].profile = profiles[fixtureProfileIndex];
+
+    return this.devices[deviceIndex];
+  }
+
   // Updates all devices with the provided parameters.
   updateAllDevices(parameters) {
     this.devices.forEach(device => {

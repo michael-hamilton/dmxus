@@ -30,15 +30,3 @@ const initParameters = {
 
 // Update all the devices in the universe with the provided parameters
 d.updateAllDevices(initParameters);
-
-
-// Loop every 5 seconds
-setInterval(() => {
-  // Update all the devices in the group with the provided parameters
-  d.updateAllDevicesInGroup('group', {
-    red: dmxus.getRandom8BitValue(),
-    green: dmxus.getRandom8BitValue(),
-    blue: dmxus.getRandom8BitValue(),
-    white: dmxus.getRandom8BitValue(),
-  }, 1000);
-}, 5000);

@@ -37,6 +37,10 @@ class Server {
         this.dmxus.changeDeviceStartAddress(deviceId, startAddress);
         socket.emit('devices', this.dmxus.getDevices());
       });
+      socket.on('changeDeviceFixtureProfile', (deviceId, fixtureProfile) => {
+        this.dmxus.changeDeviceFixtureProfile(deviceId, fixtureProfile);
+        socket.emit('devices', this.dmxus.getDevices());
+      });
       this.dmxus.on('update', (universe) => socket.emit('update', universe));
     });
 

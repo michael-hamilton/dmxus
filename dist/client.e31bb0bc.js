@@ -37053,7 +37053,55 @@ Object.defineProperty(exports, "Manager", {
     return manager_2.Manager;
   }
 });
-},{"./url":"../node_modules/socket.io-client/build/url.js","./manager":"../node_modules/socket.io-client/build/manager.js","./socket":"../node_modules/socket.io-client/build/socket.js","debug":"../node_modules/debug/src/browser.js","socket.io-parser":"../node_modules/socket.io-parser/dist/index.js"}],"../node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+},{"./url":"../node_modules/socket.io-client/build/url.js","./manager":"../node_modules/socket.io-client/build/manager.js","./socket":"../node_modules/socket.io-client/build/socket.js","debug":"../node_modules/debug/src/browser.js","socket.io-parser":"../node_modules/socket.io-parser/dist/index.js"}],"../profiles.json":[function(require,module,exports) {
+module.exports = {
+  "Dimmer": {
+    "description": "A single channel for intensity control",
+    "type": "i",
+    "parameters": ["intensity"]
+  },
+  "IRGB": {
+    "description": "4 channel rgb fixture with intensity",
+    "type": "irgb",
+    "parameters": ["intensity", "red", "green", "blue"]
+  },
+  "IRGBA": {
+    "description": "5 channel rgba fixture with intensity",
+    "type": "irgba",
+    "parameters": ["intensity", "red", "green", "blue", "amber"]
+  },
+  "IRGBAW": {
+    "description": "6 channel rgbaw fixture with intensity",
+    "type": "irgbaw",
+    "parameters": ["intensity", "red", "green", "blue", "amber", "white"]
+  },
+  "IRGBW": {
+    "description": "5 channel rgbw fixture with intensity",
+    "type": "irgbw",
+    "parameters": ["intensity", "red", "green", "blue", "white"]
+  },
+  "RGB": {
+    "description": "3 channel rgb fixture",
+    "type": "irgb",
+    "parameters": ["red", "green", "blue"]
+  },
+  "RGBA": {
+    "description": "4 channel rgba fixture",
+    "type": "rgba",
+    "parameters": ["red", "green", "blue", "amber"]
+  },
+  "RGBAW": {
+    "description": "5 channel rgbaw fixture",
+    "type": "rgbaw",
+    "parameters": ["red", "green", "blue", "amber", "white"]
+  },
+  "RGBW": {
+    "description": "4 channel rgbw fixture",
+    "type": "rgbw",
+    "parameters": ["red", "green", "blue", "white"]
+  }
+};
+},{}],"../node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
@@ -37136,6 +37184,8 @@ exports.default = void 0;
 var _react = _interopRequireWildcard(require("react"));
 
 var _socket = _interopRequireDefault(require("socket.io-client"));
+
+var profiles = _interopRequireWildcard(require("../profiles.json"));
 
 require("./client.scss");
 
@@ -37264,6 +37314,11 @@ var Client = /*#__PURE__*/function (_Component) {
     key: "handleChangeDeviceAddress",
     value: function handleChangeDeviceAddress(deviceId, startAddress) {
       this.socket.emit('changeDeviceStartAddress', deviceId, startAddress);
+    }
+  }, {
+    key: "handleChangeDeviceFixtureProfile",
+    value: function handleChangeDeviceFixtureProfile(deviceId, fixtureProfile) {
+      this.socket.emit('changeDeviceFixtureProfile', deviceId, fixtureProfile);
     } // Handles changing the interface port
 
   }, {
@@ -37363,7 +37418,8 @@ var Client = /*#__PURE__*/function (_Component) {
       }, renderSliders(this.state.universe, this.handleSliderChange.bind(this)))) : null, this.state.showEditor ? _react.default.createElement(Editor, {
         toggleEditor: this.toggleEditor.bind(this),
         device: this.state.selectedDevice,
-        changeStartAddress: this.handleChangeDeviceAddress.bind(this)
+        changeStartAddress: this.handleChangeDeviceAddress.bind(this),
+        changeDeviceFixtureProfile: this.handleChangeDeviceFixtureProfile.bind(this)
       }) : null);
     }
   }]);
@@ -37507,7 +37563,8 @@ var Editor = /*#__PURE__*/function (_Component3) {
 
     _this5 = _super3.call(this, props);
     _this5.state = {
-      deviceStartAddress: ''
+      deviceStartAddress: '',
+      deviceFixtureProfile: ''
     };
     return _this5;
   }
@@ -37515,8 +37572,11 @@ var Editor = /*#__PURE__*/function (_Component3) {
   _createClass(Editor, [{
     key: "componentDidMount",
     value: function componentDidMount() {
+      var _this$props, _this$props$device, _this$props2, _this$props2$device, _this$props2$device$p;
+
       this.setState({
-        deviceStartAddress: this.props.device.startAddress
+        deviceStartAddress: this === null || this === void 0 ? void 0 : (_this$props = this.props) === null || _this$props === void 0 ? void 0 : (_this$props$device = _this$props.device) === null || _this$props$device === void 0 ? void 0 : _this$props$device.startAddress,
+        deviceFixtureProfile: this === null || this === void 0 ? void 0 : (_this$props2 = this.props) === null || _this$props2 === void 0 ? void 0 : (_this$props2$device = _this$props2.device) === null || _this$props2$device === void 0 ? void 0 : (_this$props2$device$p = _this$props2$device.profile) === null || _this$props2$device$p === void 0 ? void 0 : _this$props2$device$p.type
       });
     } // Handles changing the start address of the device
 
@@ -37528,10 +37588,22 @@ var Editor = /*#__PURE__*/function (_Component3) {
       this.setState({
         deviceStartAddress: deviceStartAddress
       });
+    } // Handles changing the start address of the device
+
+  }, {
+    key: "handleChangeDeviceFixtureProfile",
+    value: function handleChangeDeviceFixtureProfile(e) {
+      var deviceFixtureProfile = e.target.value;
+      this.props.changeDeviceFixtureProfile(this.props.device.id, deviceFixtureProfile);
+      this.setState({
+        deviceFixtureProfile: deviceFixtureProfile
+      });
     }
   }, {
     key: "render",
     value: function render() {
+      var _this$state, _this$state2;
+
       return _react.default.createElement("div", {
         className: 'editor-wrapper'
       }, _react.default.createElement("div", {
@@ -37541,12 +37613,17 @@ var Editor = /*#__PURE__*/function (_Component3) {
         onClick: this.props.toggleEditor
       }, "x"), _react.default.createElement("div", {
         className: 'device-details'
-      }, _react.default.createElement("p", null, _react.default.createElement("span", null, "Device ID:"), " ", this.props.device.id), _react.default.createElement("p", null, _react.default.createElement("span", null, "Start Address:"), _react.default.createElement(Select, {
+      }, _react.default.createElement("p", null, _react.default.createElement("span", null, "Device ID: "), this.props.device.id), _react.default.createElement("p", null, _react.default.createElement("span", null, "Start Address: "), _react.default.createElement(Select, {
         defaultOption: 'Select an address...',
         onChange: this.handleChangeAddress.bind(this),
         options: addressOptions(),
-        value: this.state.deviceStartAddress || ''
-      })), this.props.device.profile && this.props.device.profile.type && this.props.device.profile.description ? _react.default.createElement("p", null, _react.default.createElement("span", null, "Fixture Profile:"), " ", this.props.device.profile.type, " (", this.props.device.profile.description, ")") : _react.default.createElement("p", null, _react.default.createElement("span", null, "Fixture Profile:"), " not set"), this.props.device.profile && this.props.device.profile.parameters ? _react.default.createElement("p", null, _react.default.createElement("span", null, "Fixture Parameters:"), " ", this.props.device.profile.parameters.join(', ')) : _react.default.createElement("p", null, _react.default.createElement("span", null, "Fixture Parameters:"), " none"), this.props.device.groups.length ? _react.default.createElement("p", null, _react.default.createElement("span", null, "Groups:"), " ", this.props.device.groups.join(', ')) : null)));
+        value: (this === null || this === void 0 ? void 0 : (_this$state = this.state) === null || _this$state === void 0 ? void 0 : _this$state.deviceStartAddress) || ''
+      })), _react.default.createElement("p", null, _react.default.createElement("span", null, "Fixture Profile: "), _react.default.createElement(Select, {
+        defaultOption: 'Select a fixture profile...',
+        onChange: this.handleChangeDeviceFixtureProfile.bind(this),
+        options: fixtureProfileOptions(),
+        value: (this === null || this === void 0 ? void 0 : (_this$state2 = this.state) === null || _this$state2 === void 0 ? void 0 : _this$state2.deviceFixtureProfile) || ''
+      })), this.state.deviceFixtureProfile && this.props.device.profile.parameters ? _react.default.createElement("p", null, _react.default.createElement("span", null, "Fixture Parameters: "), " ", this.props.device.profile.parameters.join(', ')) : _react.default.createElement("p", null, _react.default.createElement("span", null, "Fixture Parameters: "), " none"), this.props.device.groups.length ? _react.default.createElement("p", null, _react.default.createElement("span", null, "Groups: "), this.props.device.groups.join(', ')) : null)));
     }
   }]);
 
@@ -37566,9 +37643,20 @@ var addressOptions = function addressOptions() {
   return addresses;
 };
 
+var fixtureProfileOptions = function fixtureProfileOptions() {
+  var options = [];
+  Object.keys(profiles).forEach(function (profile, i) {
+    options[i] = {
+      value: profiles[profile].type,
+      option: profile
+    };
+  });
+  return options;
+};
+
 var _default = Client;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","socket.io-client":"../node_modules/socket.io-client/build/index.js","./client.scss":"client.scss"}],"index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","socket.io-client":"../node_modules/socket.io-client/build/index.js","../profiles.json":"../profiles.json","./client.scss":"client.scss"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -37609,7 +37697,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58945" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55484" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

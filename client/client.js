@@ -2,6 +2,7 @@
 
 import React, {Component, useEffect, useState} from 'react';
 import io from 'socket.io-client';
+import * as profiles from '../profiles.json';
 import './client.scss';
 
 class Client extends Component {
@@ -64,6 +65,10 @@ class Client extends Component {
   // Handles changing the start address of the specified device
   handleChangeDeviceAddress(deviceId, startAddress) {
     this.socket.emit('changeDeviceStartAddress', deviceId, startAddress);
+  }
+
+  handleChangeDeviceFixtureProfile(deviceId, fixtureProfile) {
+    this.socket.emit('changeDeviceFixtureProfile', deviceId, fixtureProfile);
   }
 
   // Handles changing the interface port
@@ -149,7 +154,14 @@ class Client extends Component {
         }
 
         {
-          this.state.showEditor ? <Editor toggleEditor={this.toggleEditor.bind(this)} device={this.state.selectedDevice} changeStartAddress={this.handleChangeDeviceAddress.bind(this)} /> : null
+          this.state.showEditor ?
+            <Editor
+              toggleEditor={this.toggleEditor.bind(this)}
+              device={this.state.selectedDevice}
+              changeStartAddress={this.handleChangeDeviceAddress.bind(this)}
+              changeDeviceFixtureProfile={this.handleChangeDeviceFixtureProfile.bind(this)}
+            /> :
+            null
         }
       </div>
     );
@@ -255,12 +267,16 @@ class Editor extends Component {
     super(props);
 
     this.state = {
-      deviceStartAddress: ''
+      deviceStartAddress: '',
+      deviceFixtureProfile: '',
     }
   }
 
   componentDidMount() {
-    this.setState({deviceStartAddress: this.props.device.startAddress})
+    this.setState({
+      deviceStartAddress: this?.props?.device?.startAddress,
+      deviceFixtureProfile: this?.props?.device?.profile?.type,
+    })
   }
 
   // Handles changing the start address of the device
@@ -270,35 +286,48 @@ class Editor extends Component {
     this.setState({deviceStartAddress})
   }
 
+  // Handles changing the start address of the device
+  handleChangeDeviceFixtureProfile(e) {
+    const deviceFixtureProfile = e.target.value;
+    this.props.changeDeviceFixtureProfile(this.props.device.id, deviceFixtureProfile);
+    this.setState({deviceFixtureProfile})
+  }
+
   render() {
     return (
       <div className={'editor-wrapper'}>
         <div className={'editor'}>
           <button className={'close'} onClick={this.props.toggleEditor}>x</button>
           <div className={'device-details'}>
-            <p><span>Device ID:</span> {this.props.device.id}</p>
+            <p><span>Device ID: </span>{this.props.device.id}</p>
             <p>
-              <span>Start Address:</span>
+              <span>Start Address: </span>
               <Select
                 defaultOption={'Select an address...'}
                 onChange={this.handleChangeAddress.bind(this)}
                 options={addressOptions()}
-                value={this.state.deviceStartAddress || ''}
+                value={this?.state?.deviceStartAddress || ''}
               />
             </p>
             {
-              this.props.device.profile && this.props.device.profile.type && this.props.device.profile.description ?
-                <p><span>Fixture Profile:</span> {this.props.device.profile.type} ({this.props.device.profile.description})</p>
-                : <p><span>Fixture Profile:</span> not set</p>
+              <p>
+                <span>Fixture Profile: </span>
+                <Select
+                  defaultOption={'Select a fixture profile...'}
+                  onChange={this.handleChangeDeviceFixtureProfile.bind(this)}
+                  options={fixtureProfileOptions()}
+                  value={this?.state?.deviceFixtureProfile || ''}
+                />
+              </p>
             }
             {
-              this.props.device.profile && this.props.device.profile.parameters ?
-                <p><span>Fixture Parameters:</span> {this.props.device.profile.parameters.join(', ')}</p>
-                : <p><span>Fixture Parameters:</span> none</p>
+              this.state.deviceFixtureProfile && this.props.device.profile.parameters ?
+                <p><span>Fixture Parameters: </span> {this.props.device.profile.parameters.join(', ')}</p>
+                : <p><span>Fixture Parameters: </span> none</p>
             }
             {
               this.props.device.groups.length ?
-                <p><span>Groups:</span> {this.props.device.groups.join(', ')}</p>
+                <p><span>Groups: </span>{this.props.device.groups.join(', ')}</p>
                 : null
             }
           </div>
@@ -316,6 +345,16 @@ const addressOptions = () => {
   }
 
   return addresses;
+}
+
+const fixtureProfileOptions = () => {
+  const options = [];
+
+  Object.keys(profiles).forEach((profile, i) => {
+    options[i] = {value: profiles[profile].type, option: profile}
+  });
+
+  return options;
 }
 
 export default Client;
