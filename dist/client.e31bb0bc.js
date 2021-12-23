@@ -37407,7 +37407,7 @@ var Client = /*#__PURE__*/function (_Component) {
         className: 'content-wrapper'
       }, _react.default.createElement("div", {
         className: 'devices'
-      }, renderDevices(this.state.devices, this.state.universe, this.toggleEditor.bind(this), this.handleChangeDeviceAddress.bind(this)))) : null, this.state.tab === 1 ? _react.default.createElement("div", {
+      }, renderDevices(this.state.devices, this.state.universe, this.toggleEditor.bind(this)))) : null, this.state.tab === 1 ? _react.default.createElement("div", {
         className: 'content-wrapper'
       }, _react.default.createElement("div", {
         className: 'universe'
@@ -37563,8 +37563,10 @@ var Editor = /*#__PURE__*/function (_Component3) {
 
     _this5 = _super3.call(this, props);
     _this5.state = {
+      deviceID: null,
       deviceStartAddress: '',
-      deviceFixtureProfile: ''
+      deviceFixtureProfile: '',
+      deviceFixtureParameters: []
     };
     return _this5;
   }
@@ -37602,7 +37604,7 @@ var Editor = /*#__PURE__*/function (_Component3) {
   }, {
     key: "render",
     value: function render() {
-      var _this$state, _this$state2;
+      var _this$state, _this$state2, _this$props3, _this$props3$device, _this$props3$device$p;
 
       return _react.default.createElement("div", {
         className: 'editor-wrapper'
@@ -37623,7 +37625,7 @@ var Editor = /*#__PURE__*/function (_Component3) {
         onChange: this.handleChangeDeviceFixtureProfile.bind(this),
         options: fixtureProfileOptions(),
         value: (this === null || this === void 0 ? void 0 : (_this$state2 = this.state) === null || _this$state2 === void 0 ? void 0 : _this$state2.deviceFixtureProfile) || ''
-      })), this.state.deviceFixtureProfile && this.props.device.profile.parameters ? _react.default.createElement("p", null, _react.default.createElement("span", null, "Fixture Parameters: "), " ", this.props.device.profile.parameters.join(', ')) : _react.default.createElement("p", null, _react.default.createElement("span", null, "Fixture Parameters: "), " none"), this.props.device.groups.length ? _react.default.createElement("p", null, _react.default.createElement("span", null, "Groups: "), this.props.device.groups.join(', ')) : null)));
+      })), this.state.deviceFixtureProfile && this !== null && this !== void 0 && (_this$props3 = this.props) !== null && _this$props3 !== void 0 && (_this$props3$device = _this$props3.device) !== null && _this$props3$device !== void 0 && (_this$props3$device$p = _this$props3$device.profile) !== null && _this$props3$device$p !== void 0 && _this$props3$device$p.parameters ? _react.default.createElement("p", null, _react.default.createElement("span", null, "Fixture Parameters: "), " ", this.props.device.profile.parameters.join(', ')) : _react.default.createElement("p", null, _react.default.createElement("span", null, "Fixture Parameters: "), " none"), this.props.device.groups.length ? _react.default.createElement("p", null, _react.default.createElement("span", null, "Groups: "), this.props.device.groups.join(', ')) : null)));
     }
   }]);
 
@@ -37697,7 +37699,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55484" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60597" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

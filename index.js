@@ -107,6 +107,7 @@ class DMXUS extends EventEmitter {
     const deviceIndex = this.devices.findIndex(device => device.id === deviceId);
     const fixtureProfileIndex = Object.keys(profiles).find(profile => profiles[profile].type === fixtureProfileType);
 
+    this.devices[deviceIndex].deviceName = 'a';
     this.devices[deviceIndex].profile = profiles[fixtureProfileIndex];
 
     return this.devices[deviceIndex];

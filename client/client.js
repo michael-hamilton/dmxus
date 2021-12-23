@@ -127,7 +127,7 @@ class Client extends Component {
           this.state.tab === 0 ? (
             <div className={'content-wrapper'}>
               <div className={'devices'}>
-                {renderDevices(this.state.devices, this.state.universe, this.toggleEditor.bind(this), this.handleChangeDeviceAddress.bind(this))}
+                {renderDevices(this.state.devices, this.state.universe, this.toggleEditor.bind(this))}
               </div>
             </div>
           ) : null
@@ -267,8 +267,10 @@ class Editor extends Component {
     super(props);
 
     this.state = {
+      deviceID: null,
       deviceStartAddress: '',
       deviceFixtureProfile: '',
+      deviceFixtureParameters: [],
     }
   }
 
@@ -321,7 +323,7 @@ class Editor extends Component {
               </p>
             }
             {
-              this.state.deviceFixtureProfile && this.props.device.profile.parameters ?
+              this.state.deviceFixtureProfile && this?.props?.device?.profile?.parameters ?
                 <p><span>Fixture Parameters: </span> {this.props.device.profile.parameters.join(', ')}</p>
                 : <p><span>Fixture Parameters: </span> none</p>
             }
