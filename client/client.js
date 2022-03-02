@@ -53,6 +53,11 @@ class Client extends Component {
     this.socket.offAny();
   }
 
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    console.log(nextState);
+    return true;
+  }
+
   // Handles changing the interface device
   handleChangeInterfaceDevice(event) {
     const interfaceName = event.target.value;
@@ -185,20 +190,22 @@ const renderDevices = (devices, universe, toggleEditor) => {
 
 // Accepts a universe object and renders addresses with their corresponding values
 const renderUniverse = (universe) => {
-  return universe.slice(1).map((address, index) => {
+  return universe.slice(1).map((addressValue, index) => {
+    const address = index + 1;
     return (
-      <div className={'address'}>
-        <p>{index + 1}</p>
-        <p className={'value'}>{universe[index + 1]}</p>
+      <div className={'address'} key={index} title={`address ${address} @ ${addressValue}`}>
+        <p>{address}</p>
+        <p className={'value'}>{addressValue}</p>
       </div>
     )});
 };
 
 // Accepts a universe object and renders addresses with their corresponding values
 const renderSliders = (universe, onChange) => {
-  return universe.slice(1).map((address, index) =>
-    <VerticalSlider key={index} address={index + 1} value={universe[index + 1]} onChange={onChange} />
-  );
+  return universe.slice(1).map((addressValue, index) => {
+    const address = index + 1;
+    return <VerticalSlider key={index} address={address} value={addressValue} onChange={onChange} />
+  });
 };
 
 // Generic select dropdown component
@@ -222,7 +229,7 @@ const VerticalSlider = props => {
   }, [props.value])
 
   return (
-    <div className={'slider-wrapper'}>
+    <div className={'slider-wrapper'} title={`address ${props.address} @ ${value}`}>
       <p className={'value'}>{value}</p>
       <input
         address={props.address}
@@ -246,14 +253,17 @@ class Device extends Component {
   }
 
   render() {
+    const {color, device} = this.props;
+    const {id, startAddress} = device;
+
     return (
-      <div>
+      <div title={`device: ${id} / address: ${startAddress || 'not set'}`}>
         <div
-          className={`device ${this.props.device.startAddress ? 'isRegistered' : ''}`}
-          onClick={() => this.props.toggleEditor(this.props.device)}
-          style={{backgroundColor: this.props.color}}
+          className={`device ${startAddress ? 'isRegistered' : ''}`}
+          onClick={() => this.props.toggleEditor(device)}
+          style={{backgroundColor: color}}
         >
-          <span className={'deviceId'}>{this.props.device.id}</span>
+          <span className={'deviceId'}>{id}</span>
         </div>
       </div>
     )

@@ -37294,6 +37294,12 @@ var Client = /*#__PURE__*/function (_Component) {
     key: "componentWillUnmount",
     value: function componentWillUnmount() {
       this.socket.offAny();
+    }
+  }, {
+    key: "shouldComponentUpdate",
+    value: function shouldComponentUpdate(nextProps, nextState, nextContext) {
+      console.log(nextState);
+      return true;
     } // Handles changing the interface device
 
   }, {
@@ -37450,22 +37456,26 @@ var renderDevices = function renderDevices(devices, universe, toggleEditor) {
 
 
 var renderUniverse = function renderUniverse(universe) {
-  return universe.slice(1).map(function (address, index) {
+  return universe.slice(1).map(function (addressValue, index) {
+    var address = index + 1;
     return _react.default.createElement("div", {
-      className: 'address'
-    }, _react.default.createElement("p", null, index + 1), _react.default.createElement("p", {
+      className: 'address',
+      key: index,
+      title: "address ".concat(address, " @ ").concat(addressValue)
+    }, _react.default.createElement("p", null, address), _react.default.createElement("p", {
       className: 'value'
-    }, universe[index + 1]));
+    }, addressValue));
   });
 }; // Accepts a universe object and renders addresses with their corresponding values
 
 
 var renderSliders = function renderSliders(universe, onChange) {
-  return universe.slice(1).map(function (address, index) {
+  return universe.slice(1).map(function (addressValue, index) {
+    var address = index + 1;
     return _react.default.createElement(VerticalSlider, {
       key: index,
-      address: index + 1,
-      value: universe[index + 1],
+      address: address,
+      value: addressValue,
       onChange: onChange
     });
   });
@@ -37499,7 +37509,8 @@ var VerticalSlider = function VerticalSlider(props) {
     setValue(props.value);
   }, [props.value]);
   return _react.default.createElement("div", {
-    className: 'slider-wrapper'
+    className: 'slider-wrapper',
+    title: "address ".concat(props.address, " @ ").concat(value)
   }, _react.default.createElement("p", {
     className: 'value'
   }, value), _react.default.createElement("input", {
@@ -37533,17 +37544,24 @@ var Device = /*#__PURE__*/function (_Component2) {
     value: function render() {
       var _this4 = this;
 
-      return _react.default.createElement("div", null, _react.default.createElement("div", {
-        className: "device ".concat(this.props.device.startAddress ? 'isRegistered' : ''),
+      var _this$props = this.props,
+          color = _this$props.color,
+          device = _this$props.device;
+      var id = device.id,
+          startAddress = device.startAddress;
+      return _react.default.createElement("div", {
+        title: "device: ".concat(id, " / address: ").concat(startAddress || 'not set')
+      }, _react.default.createElement("div", {
+        className: "device ".concat(startAddress ? 'isRegistered' : ''),
         onClick: function onClick() {
-          return _this4.props.toggleEditor(_this4.props.device);
+          return _this4.props.toggleEditor(device);
         },
         style: {
-          backgroundColor: this.props.color
+          backgroundColor: color
         }
       }, _react.default.createElement("span", {
         className: 'deviceId'
-      }, this.props.device.id)));
+      }, id)));
     }
   }]);
 
@@ -37574,11 +37592,11 @@ var Editor = /*#__PURE__*/function (_Component3) {
   _createClass(Editor, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      var _this$props, _this$props$device, _this$props2, _this$props2$device, _this$props2$device$p;
+      var _this$props2, _this$props2$device, _this$props3, _this$props3$device, _this$props3$device$p;
 
       this.setState({
-        deviceStartAddress: this === null || this === void 0 ? void 0 : (_this$props = this.props) === null || _this$props === void 0 ? void 0 : (_this$props$device = _this$props.device) === null || _this$props$device === void 0 ? void 0 : _this$props$device.startAddress,
-        deviceFixtureProfile: this === null || this === void 0 ? void 0 : (_this$props2 = this.props) === null || _this$props2 === void 0 ? void 0 : (_this$props2$device = _this$props2.device) === null || _this$props2$device === void 0 ? void 0 : (_this$props2$device$p = _this$props2$device.profile) === null || _this$props2$device$p === void 0 ? void 0 : _this$props2$device$p.type
+        deviceStartAddress: this === null || this === void 0 ? void 0 : (_this$props2 = this.props) === null || _this$props2 === void 0 ? void 0 : (_this$props2$device = _this$props2.device) === null || _this$props2$device === void 0 ? void 0 : _this$props2$device.startAddress,
+        deviceFixtureProfile: this === null || this === void 0 ? void 0 : (_this$props3 = this.props) === null || _this$props3 === void 0 ? void 0 : (_this$props3$device = _this$props3.device) === null || _this$props3$device === void 0 ? void 0 : (_this$props3$device$p = _this$props3$device.profile) === null || _this$props3$device$p === void 0 ? void 0 : _this$props3$device$p.type
       });
     } // Handles changing the start address of the device
 
@@ -37604,7 +37622,7 @@ var Editor = /*#__PURE__*/function (_Component3) {
   }, {
     key: "render",
     value: function render() {
-      var _this$state, _this$state2, _this$props3, _this$props3$device, _this$props3$device$p;
+      var _this$state, _this$state2, _this$props4, _this$props4$device, _this$props4$device$p;
 
       return _react.default.createElement("div", {
         className: 'editor-wrapper'
@@ -37625,7 +37643,7 @@ var Editor = /*#__PURE__*/function (_Component3) {
         onChange: this.handleChangeDeviceFixtureProfile.bind(this),
         options: fixtureProfileOptions(),
         value: (this === null || this === void 0 ? void 0 : (_this$state2 = this.state) === null || _this$state2 === void 0 ? void 0 : _this$state2.deviceFixtureProfile) || ''
-      })), this.state.deviceFixtureProfile && this !== null && this !== void 0 && (_this$props3 = this.props) !== null && _this$props3 !== void 0 && (_this$props3$device = _this$props3.device) !== null && _this$props3$device !== void 0 && (_this$props3$device$p = _this$props3$device.profile) !== null && _this$props3$device$p !== void 0 && _this$props3$device$p.parameters ? _react.default.createElement("p", null, _react.default.createElement("span", null, "Fixture Parameters: "), " ", this.props.device.profile.parameters.join(', ')) : _react.default.createElement("p", null, _react.default.createElement("span", null, "Fixture Parameters: "), " none"), this.props.device.groups.length ? _react.default.createElement("p", null, _react.default.createElement("span", null, "Groups: "), this.props.device.groups.join(', ')) : null)));
+      })), this.state.deviceFixtureProfile && this !== null && this !== void 0 && (_this$props4 = this.props) !== null && _this$props4 !== void 0 && (_this$props4$device = _this$props4.device) !== null && _this$props4$device !== void 0 && (_this$props4$device$p = _this$props4$device.profile) !== null && _this$props4$device$p !== void 0 && _this$props4$device$p.parameters ? _react.default.createElement("p", null, _react.default.createElement("span", null, "Fixture Parameters: "), " ", this.props.device.profile.parameters.join(', ')) : _react.default.createElement("p", null, _react.default.createElement("span", null, "Fixture Parameters: "), " none"), this.props.device.groups.length ? _react.default.createElement("p", null, _react.default.createElement("span", null, "Groups: "), this.props.device.groups.join(', ')) : null)));
     }
   }]);
 
@@ -37699,7 +37717,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60597" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63969" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
