@@ -1,6 +1,6 @@
 // Driver for Enttec DMX USB PRO interface
 
-const SerialPort = require('serialport');
+const {SerialPort} = require('serialport');
 
 class EnttecDmxUsbProDriver {
 

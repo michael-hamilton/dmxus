@@ -1,7 +1,7 @@
 // Main dmxus class
 
 const EventEmitter = require('events');
-const SerialPort = require('serialport');
+const {SerialPort} = require('serialport');
 const Driver = require('./drivers');
 const Server = require('./server');
 const profiles = require('./profiles');
@@ -26,7 +26,7 @@ class DMXUS extends EventEmitter {
   }
 
 
-  // Initializes a webserver on the provided port (default 9090) with a reference to the dmxus instance
+  // Initializes a webserver on the provided port (default 9090) with a reference to the dmxus instance.
   initWebServer(port) {
     this.server = new Server(port, this);
     this.server.init();
@@ -47,7 +47,7 @@ class DMXUS extends EventEmitter {
   }
 
 
-  // Closes the port used by the current driver and re-initializes the interface
+  // Closes the port used by the current driver and re-initializes the interface.
   reinitializeDriver(driverName, interfacePort) {
     this.driver.closePort();
     this.interfacePort = interfacePort;
@@ -72,6 +72,13 @@ class DMXUS extends EventEmitter {
     return this.devices[deviceIndex];
   }
 
+  // Accepts a deviceId and removes it from the device list.
+  removeDevice(deviceId) {
+    const deviceIndex = this.devices.findIndex(device => device.id === deviceId);
+
+    this.devices[deviceIndex] = {};
+  }
+
 
   // Accepts a DMX address and updates with the provided value.
   updateAddressValue(address, value) {
@@ -94,7 +101,7 @@ class DMXUS extends EventEmitter {
     this.update();
   }
 
-  // Changes the start address of the specified deviceId
+  // Changes the start address of the specified deviceId.
   changeDeviceStartAddress(deviceId, startAddress) {
     const deviceIndex = this.devices.findIndex(device => device.id === deviceId);
     this.devices[deviceIndex].startAddress = startAddress;
@@ -102,7 +109,7 @@ class DMXUS extends EventEmitter {
     return this.devices[deviceIndex];
   }
 
-  // Changes the fixture profile of the specified deviceId
+  // Changes the fixture profile of the specified deviceId.
   changeDeviceFixtureProfile(deviceId, fixtureProfileType) {
     const deviceIndex = this.devices.findIndex(device => device.id === deviceId);
     const fixtureProfileIndex = Object.keys(profiles).find(profile => profiles[profile].type === fixtureProfileType);
@@ -122,7 +129,7 @@ class DMXUS extends EventEmitter {
   }
 
 
-  // Returns the device with the provided deviceId
+  // Returns the device with the provided deviceId.
   getDeviceById(deviceId) {
     const deviceIndex = this.devices.findIndex(device => device.id === deviceId);
 
@@ -130,7 +137,7 @@ class DMXUS extends EventEmitter {
   }
 
 
-  // Returns devices which are a part of the provided group name
+  // Returns devices which are a part of the provided group name.
   getDevicesByGroup(group) {
     return this.devices.filter(device => device.groups.includes(group));
   }
@@ -176,7 +183,7 @@ class DMXUS extends EventEmitter {
   }
 
 
-  // Returns the parameter values of the specified device
+  // Returns the parameter values of the specified device.
   getDeviceParameterValues(deviceId) {
     const device = this.getDeviceById(deviceId)
     const fixtureParameterValues = {};
@@ -195,25 +202,25 @@ class DMXUS extends EventEmitter {
   }
 
 
-  // Returns a list of serial ports as reported by the system
+  // Returns a list of serial ports as reported by the system.
   async listPorts() {
     return await SerialPort.list();
   }
 
 
-  // Returns the device list
+  // Returns the device list.
   getDevices() {
     return this.devices;
   }
 
 
-  // Returns the driver currently used by dmxus
+  // Returns the driver currently used by dmxus.
   getDriverName() {
     return this.driverName;
   }
 
 
-  // Returns the interfacePort currently used by dmxus
+  // Returns the interfacePort currently used by dmxus.
   getInterfacePort() {
     return this.interfacePort;
   }
@@ -227,19 +234,19 @@ class DMXUS extends EventEmitter {
   }
 
 
-  // Returns the JSON value of the current state of the universe
+  // Returns the JSON value of the current state of the universe.
   getUniverseState() {
     return this.universe.toJSON();
   }
 
 
-  // Returns the device profile of the provided profile name
+  // Returns the device profile of the provided profile name.
   static getDeviceProfile(profileName) {
     return profiles[profileName];
   }
 
 
-  // Returns a random integer value from 0-255
+  // Returns a random integer value from 0-255.
   static getRandom8BitValue() {
     return Math.floor(Math.random() * 255);
   }
