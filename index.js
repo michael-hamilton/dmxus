@@ -25,6 +25,16 @@ class DMXUS extends EventEmitter {
     this.initDevices(deviceCount);
   }
 
+  // Returns a device object with the the provided ID
+  static createDeviceObject(id) {
+    return {
+      id,
+      deviceName: null,
+      startAddress: null,
+      profile: null,
+      groups: [],
+    }
+  }
 
   // Initializes a webserver on the provided port (default 9090) with a reference to the dmxus instance.
   initWebServer(port) {
@@ -36,16 +46,9 @@ class DMXUS extends EventEmitter {
   // Initializes the device list with a default count of 96 devices
   initDevices(deviceCount) {
     for(let i = 0; i < deviceCount; i++) {
-      this.devices[i] = {
-        id: i + 1,
-        deviceName: null,
-        startAddress: null,
-        profile: null,
-        groups: [],
-      }
+      this.devices[i] = DMXUS.createDeviceObject(i+1);
     }
   }
-
 
   // Closes the port used by the current driver and re-initializes the interface.
   reinitializeDriver(driverName, interfacePort) {
@@ -76,9 +79,8 @@ class DMXUS extends EventEmitter {
   removeDevice(deviceId) {
     const deviceIndex = this.devices.findIndex(device => device.id === deviceId);
 
-    this.devices[deviceIndex] = {};
+    this.devices[deviceIndex] = DMXUS.createDeviceObject(deviceId);
   }
-
 
   // Accepts a DMX address and updates with the provided value.
   updateAddressValue(address, value) {
