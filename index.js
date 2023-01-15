@@ -103,6 +103,28 @@ class DMXUS extends EventEmitter {
     this.update();
   }
 
+
+  // Adds the device to the specified groupName
+  addDeviceToGroup(deviceId, groupName) {
+    const deviceIndex = this.devices.findIndex(device => device.id === deviceId);
+
+    if(!this.devices[deviceIndex].groups[groupName]) {
+      this.devices[deviceIndex].groups.push(groupName);
+    }
+  }
+
+
+  // Removes the device from the specified groupName
+  removeDeviceFromGroup(deviceId, groupName) {
+    const deviceIndex = this.devices.findIndex(device => device.id === deviceId);
+    const groupIndex = this.devices[deviceIndex].groups.indexOf(groupName);
+
+    if(groupIndex > -1) {
+      this.devices[deviceIndex].groups.splice(groupIndex, 1);
+    }
+  }
+
+
   // Changes the start address of the specified deviceId.
   changeDeviceStartAddress(deviceId, startAddress) {
     const deviceIndex = this.devices.findIndex(device => device.id === deviceId);
