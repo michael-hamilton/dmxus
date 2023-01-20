@@ -1,4 +1,6 @@
 .cache
+.parcel-cache
+dist
 .DS_Store
 .idea
 *.log
