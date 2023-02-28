@@ -5,11 +5,12 @@ const {SerialPort} = require('serialport');
 class EnttecDmxUsbProDriver {
 
   constructor(port) {
-    this.port = new SerialPort(port,  {
+    this.port = new SerialPort({
       'baudRate': 250000,
       'dataBits': 8,
       'stopBits': 2,
-      'parity': 'none'
+      'parity': 'none',
+      'path': port
     });
   }
 
