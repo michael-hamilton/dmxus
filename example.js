@@ -13,10 +13,14 @@ d.initWebServer();
 
 
 // Add devices
-d.addDevice(1, 1, dmxus.getDeviceProfile('RGBW'), 'Test Device 1', ['group']);
-d.addDevice(2, 6, dmxus.getDeviceProfile('RGBW'), 'Test Device 2', ['group']);
-d.addDevice(3, 11, dmxus.getDeviceProfile('RGBW'), 'Test Device 3', ['group']);
-d.addDevice(4, 16, dmxus.getDeviceProfile('RGBW'), 'Test Device 4', ['group']);
+d.addDevice(1, 1, dmxus.getDeviceProfile('RGB'), 'Test Device 1', ['group']);
+d.addDevice(2, 4, dmxus.getDeviceProfile('RGB'), 'Test Device 2', ['group']);
+d.addDevice(3, 10, dmxus.getDeviceProfile('RGB'), 'Test Device 3', ['group']);
+d.addDevice(4, 13, dmxus.getDeviceProfile('RGB'), 'Test Device 4', ['group']);
+d.addDevice(5, 16, dmxus.getDeviceProfile('RGB'), 'Test Device 5', ['group']);
+d.addDevice(6, 19, dmxus.getDeviceProfile('RGB'), 'Test Device 6', ['group']);
+d.addDevice(7, 22, dmxus.getDeviceProfile('RGB'), 'Test Device 7', ['group']);
+d.addDevice(8, 25, dmxus.getDeviceProfile('RGB'), 'Test Device 8', ['group']);
 
 
 // Keys are a standardized parameter name, value is a hex value (0 - 255)
