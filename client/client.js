@@ -3,6 +3,7 @@
 import React, {Component, useEffect, useState} from 'react';
 import io from 'socket.io-client';
 import * as profiles from '../profiles.json';
+import { version } from '../package.json';
 import './client.scss';
 
 class Client extends Component {
@@ -67,8 +68,14 @@ class Client extends Component {
     this.socket.emit('changeDeviceStartAddress', deviceId, startAddress);
   }
 
+  // Handles changing the fixture profile of a specified device
   handleChangeDeviceFixtureProfile(deviceId, fixtureProfile) {
     this.socket.emit('changeDeviceFixtureProfile', deviceId, fixtureProfile);
+  }
+
+  // Toggles highlight of a specified device
+  handleDeviceHighlight(deviceId) {
+    this.socket.emit('highlightDevice', deviceId);
   }
 
   // Handles changing the interface port
@@ -85,14 +92,19 @@ class Client extends Component {
 
   // Handles updating the dmx at an address based on the input received from a slider
   handleSliderChange(e) {
-    this.socket.emit('updateAddressValue', e.target.getAttribute('address'), e.target.value)
+    this.socket.emit('updateAddressValue', e.target.getAttribute('data-address'), e.target.value)
+  }
+
+  // Handles updating the group at based on the input received from a slider
+  handleGroupSliderChange(e) {
+    console.log(e.target.getAttribute('data-address'));
   }
 
   render() {
     return (
       <div className={`app-wrapper`}>
         <div className={'header'}>
-          <h1 className={'app-title'}>dmxus client</h1>
+          <h1 className={'app-title'}>dmxus client <sup>{ version }</sup></h1>
 
           <div className={'interface-selection-wrapper'}>
             <Select
@@ -121,6 +133,8 @@ class Client extends Component {
           <button className={`tab-button ${this.state.tab === 0 ? 'active' : ''}`} onClick={() => this.setState({tab: 0})}>Devices</button>
           <button className={`tab-button ${this.state.tab === 1 ? 'active' : ''}`} onClick={() => this.setState({tab: 1})}>Universe</button>
           <button className={`tab-button ${this.state.tab === 2 ? 'active' : ''}`} onClick={() => this.setState({tab: 2})}>Virtual Desk</button>
+          <button className={`tab-button ${this.state.tab === 3 ? 'active' : ''}`} onClick={() => this.setState({tab: 3})}>Groups</button>
+          <button className={`tab-button ${this.state.tab === 4 ? 'active' : ''}`} onClick={() => this.setState({tab: 4})}>Scenes</button>
         </div>
 
         {
@@ -154,12 +168,30 @@ class Client extends Component {
         }
 
         {
+          this.state.tab === 3 ? (
+            <div className={'content-wrapper'}>
+              <div className={'desk'}>
+                {renderGroups(this.state.devices, this.state.universe, this.handleGroupSliderChange.bind(this))}
+              </div>
+            </div>
+          ) : null
+        }
+
+        {
+          this.state.tab === 4 ? (
+            <div className={'content-wrapper'}>
+            </div>
+          ) : null
+        }
+
+        {
           this.state.showEditor ?
             <Editor
               toggleEditor={this.toggleEditor.bind(this)}
               device={this.state.selectedDevice}
               changeStartAddress={this.handleChangeDeviceAddress.bind(this)}
               changeDeviceFixtureProfile={this.handleChangeDeviceFixtureProfile.bind(this)}
+              onDeviceHighlight={this.handleDeviceHighlight.bind(this)}
             /> :
             null
         }
@@ -197,7 +229,20 @@ const renderUniverse = (universe) => {
 // Accepts a universe object and renders addresses with their corresponding values
 const renderSliders = (universe, onChange) => {
   return universe.slice(1).map((address, index) =>
-    <VerticalSlider key={index} address={index + 1} value={universe[index + 1]} onChange={onChange} />
+    <VerticalSlider key={index} address={index + 1} title={index + 1} value={universe[index + 1]} onChange={onChange} />
+  );
+};
+
+// Accepts a universe object and renders addresses with their corresponding values
+const renderGroups = (devices, onChange) => {
+  const groups = [];
+
+  devices.forEach(device => groups.push(...device.groups));
+
+  const uniqueGroups = Array.from(new Set(groups).values());
+
+  return uniqueGroups.map((group, index) =>
+    <VerticalSlider key={index} address={group} title={group} value={0} onChange={onChange} />
   );
 };
 
@@ -225,7 +270,7 @@ const VerticalSlider = props => {
     <div className={'slider-wrapper'}>
       <p className={'value'}>{value}</p>
       <input
-        address={props.address}
+        data-address={props.address}
         className={'slider'}
         max={255}
         min={0}
@@ -234,7 +279,7 @@ const VerticalSlider = props => {
         type={'range'}
         value={value}
       />
-      <p className={'address'}>{props.address}</p>
+      <p className={'title'} title={props.title}>{props.title}</p>
     </div>
   );
 }
@@ -330,6 +375,12 @@ class Editor extends Component {
                 <p><span>Groups: </span>{this.props.device.groups.join(', ')}</p>
                 : null
             }
+
+            <div className={'device-controls'}>
+              <button className={'highlight'} onClick={() => this.props.onDeviceHighlight(this.props.device.id)}>
+                Highlight
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -21,6 +21,10 @@
     .app-title {
       color: #ffffff;
       user-select: none;
+
+      sup {
+        font-size: 0.8rem;
+      }
     }
 
 
@@ -37,9 +41,13 @@
   }
 
   .tab-navigation {
+    border-bottom: 0.2rem solid #ccc;
+    display: flex;
+
     .tab-button {
       background-color: #eeeeee;
       border: none;
+      flex: 1;
       font-family: sans-serif;
       font-weight: 100;
       outline: none;
@@ -61,6 +69,7 @@
   .content-wrapper {
     background-color: #cccccc;
     display: flex;
+    flex: 1;
     flex-flow: wrap row;
     justify-content: center;
     overflow: scroll;
@@ -114,9 +123,9 @@
     }
 
     .universe {
-      display: flex;
-      flex-flow: wrap row;
-      justify-content: center;
+      display: grid;
+      gap: 0.1rem;
+      grid-template-columns: repeat(16, minmax(0, 1fr));
       user-select: none;
 
       .address {
@@ -137,21 +146,27 @@
     }
 
     .desk {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+      display: grid;
+      gap: 0.1rem;
+      grid-template-columns: repeat(16, minmax(0, 1fr));
       user-select: none;
 
       .slider-wrapper {
         background-color: #ffffff;
         border: 0.125rem solid #373737;
-        margin: 0.35rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        height: 9rem;
+        padding: 0.1rem;
+        margin: 0.2rem;
+        width: 2.125rem;
 
         .slider {
           display: flex;
           justify-content: center;
-          height: 100px;
-          width: 1.6rem;
+          height: 6rem;
+          width: 100%;
           writing-mode: bt-lr;
           -webkit-appearance: slider-vertical;
         }
@@ -159,13 +174,15 @@
         p {
           font-size: 0.75rem;
           font-weight: 200;
+          overflow: hidden;
           text-align: center;
+          text-overflow: clip;
 
           &.value {
             color: #ff0000;
           }
 
-          &.address {
+          &.title {
             color: #999999;
           }
 
@@ -222,6 +239,26 @@
 
           span {
             font-weight: 800;
+          }
+        }
+
+        .device-controls {
+          display: flex;
+          padding: 1rem 0;
+
+          .highlight {
+            background-color: #86a6c7;
+            border: none;
+            outline: none;
+            padding: 0.4rem;
+            user-select: none;
+            z-index: 999;
+
+            &:hover {
+              background-color: #0e2338;
+              color: #fff;
+              cursor: pointer;
+            }
           }
         }
       }

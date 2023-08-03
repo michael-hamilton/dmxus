@@ -89,6 +89,19 @@ class DMXUS extends EventEmitter {
     this.update();
   }
 
+  // Toggles all parameters for a device between 0 and 255
+  toggleHighlightDevice(deviceId, highlight = true) {
+    const device = this.getDeviceById(deviceId);
+
+    if(device.profile) {
+      device.profile.parameters.forEach((parameter, index) => {
+        this.universe[parseInt(device.startAddress) + index] = highlight ? 255 : 0;
+      });
+    }
+
+    this.update();
+  }
+
 
   // Updates a single device at the provided start address with the provided parameters.
   updateDevice(deviceId, parameters) {

@@ -33,6 +33,7 @@ class Server {
       socket.on('getPorts', async () => socket.emit('interfacePorts', await this.dmxus.listPorts()));
       socket.on('initializeInterface', (interfaceName, interfacePort) => this.dmxus.reinitializeDriver(interfaceName, interfacePort));
       socket.on('updateAddressValue', (channel, value) => this.dmxus.updateAddressValue(channel, value));
+      socket.on('highlightDevice', (deviceId) => this.dmxus.toggleHighlightDevice(deviceId));
       socket.on('changeDeviceStartAddress', (deviceId, startAddress) => {
         this.dmxus.changeDeviceStartAddress(deviceId, startAddress);
         socket.emit('devices', this.dmxus.getDevices());
