@@ -15,12 +15,12 @@ d.initWebServer();
 // Add devices
 d.addDevice(1, 1, dmxus.getDeviceProfile('RGB'), 'Test Device 1', ['all', 'left', 'back']);
 d.addDevice(2, 4, dmxus.getDeviceProfile('RGB'), 'Test Device 2', ['all', 'left', 'middle', 'back']);
-d.addDevice(3, 10, dmxus.getDeviceProfile('RGB'), 'Test Device 3', ['all', 'left', 'middle', 'front']);
-d.addDevice(4, 13, dmxus.getDeviceProfile('RGB'), 'Test Device 4', ['all', 'left', 'front']);
-d.addDevice(5, 16, dmxus.getDeviceProfile('RGB'), 'Test Device 5', ['all', 'right', 'front']);
-d.addDevice(6, 19, dmxus.getDeviceProfile('RGB'), 'Test Device 6', ['all', 'right', 'middle', 'front']);
-d.addDevice(7, 22, dmxus.getDeviceProfile('RGB'), 'Test Device 7', ['all', 'right', 'middle', 'back']);
-d.addDevice(8, 25, dmxus.getDeviceProfile('RGB'), 'Test Device 8', ['all', 'right', 'back']);
+d.addDevice(3, 7, dmxus.getDeviceProfile('RGB'), 'Test Device 3', ['all', 'left', 'middle', 'front']);
+d.addDevice(4, 10, dmxus.getDeviceProfile('RGB'), 'Test Device 4', ['all', 'left', 'front']);
+d.addDevice(5, 13, dmxus.getDeviceProfile('RGB'), 'Test Device 5', ['all', 'right', 'front']);
+d.addDevice(6, 16, dmxus.getDeviceProfile('RGB'), 'Test Device 6', ['all', 'right', 'middle', 'front']);
+d.addDevice(7, 19, dmxus.getDeviceProfile('RGB'), 'Test Device 7', ['all', 'right', 'middle', 'back']);
+d.addDevice(8, 22, dmxus.getDeviceProfile('RGB'), 'Test Device 8', ['all', 'right', 'back']);
 
 d.addScene('All White', () => {
   d.updateAllDevicesInGroup('all', {
