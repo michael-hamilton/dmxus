@@ -17,7 +17,7 @@ dmxus works on Windows, Mac, and Linux and should be compatible with all active/
 ## Usage
 
 Require the library as you would any node module. Instantiate the class by passing in the name of the driver to use, and the name or path of the port for the DMX interface.  Each instance of dmxus is capable of controlling a single 512 channel DMX universe.
-```
+```javascript
 const dmxus = require("dmxus");
 
 // Windows
@@ -37,7 +37,7 @@ There is a driver called "simulator" which allows use of dmxus without a hardwar
 Lighting fixtures are represented by dmxus as devices. dmxus by default can manage and control up to 96 devices. To add a device, use the `addDevice()` method. 
 The first parameter is the device's ID (1-96), the second is the device start address (1-512), the third is a device profile object (see appendix for the shape of this object), the fourth is an optional device name, and the fifth is an optional array of group names.
 dmxus also includes a utility method `getDeviceProfile()` for retrieving pre-existing device profiles.
-```
+```javascript
 universe.addDevice(1, 1, dmxus.getDeviceProfile("IRGB"), "Test Device", ["group"]);
 ```
 
@@ -45,7 +45,7 @@ universe.addDevice(1, 1, dmxus.getDeviceProfile("IRGB"), "Test Device", ["group"
 #### Updating Devices
 
 dmxus provides a few methods for controlling a device.  All methods for updating devices expect a parameters object that defines what device parameters should update. The object's keys are the names of the parameter to control (see appendix for standardized parameter names), and values are a hex value (0 - 255).
-```
+```javascript
 const parameters = {
     "intensity": 255,
     "red": 255,
@@ -98,7 +98,7 @@ The Virtual Console tab allows individual control of all 512 addresses in the un
 #### Device Profiles
 
 Some generic profiles come standard with dmxus. If you want to add a device for which a profile does not exist, use the following format in your device profile object:
-```
+```json
 {
     "description": "4 channel rgb fixture with intensity",
     "parameters": [
@@ -133,7 +133,7 @@ Parameter names can be arbitrary, however for consistency it is recommended that
 The simulator driver exposes the same `send()`, `changePort()`, and `closePort()` methods as a hardware interface driver, but by default they don't do anything.
 
 In place of a port name, you can optionally provide a custom dummy SerialPort instance to be used within the driver:
-```
+```javascript
 {
   isOpen: bool,
   close: function,
