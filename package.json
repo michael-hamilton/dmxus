@@ -35,7 +35,8 @@
     "sass": "^1.32.6",
     "serialport": "^10.0.1",
     "socket.io": "^3.1.1",
-    "socket.io-client": "^3.1.1"
+    "socket.io-client": "^3.1.1",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "nexe": "^4.0.0-rc.2"

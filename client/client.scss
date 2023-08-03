@@ -77,9 +77,10 @@
     position: relative;
 
     .devices {
-      display: flex;
-      flex-flow: wrap row;
-      justify-content: center;
+      display: grid;
+      gap: 0.1rem;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      user-select: none;
 
       .device {
         background-color: #eeeeee;
@@ -187,6 +188,29 @@
           }
 
         }
+      }
+    }
+  }
+
+  .scenes {
+    display: grid;
+    gap: 0.1rem;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: auto auto 1fr 1fr 1fr auto auto;
+    user-select: none;
+
+    .scene-button {
+      align-items: center;
+      display: flex;
+      height: 3rem;
+      justify-content: center;
+      margin: 0.2rem;
+      padding: 0.125rem;
+      user-select: none;
+      width: 3rem;
+
+      &:hover {
+        cursor: pointer;
       }
     }
   }

@@ -2,6 +2,7 @@
 
 const EventEmitter = require('events');
 const {SerialPort} = require('serialport');
+const { v4: uuidv4 } = require('uuid');
 const Driver = require('./drivers');
 const Server = require('./server');
 const profiles = require('./profiles');
@@ -18,6 +19,7 @@ class DMXUS extends EventEmitter {
     this.interfacePort = interfacePort;
     this.io = null;
     this.refreshRate = 25;
+    this.scenes = {};
     this.server = null;
     this.timers = {};
     this.universe = Buffer.alloc(513, 0);
@@ -239,6 +241,19 @@ class DMXUS extends EventEmitter {
   }
 
 
+  // Adds an executable scene
+  addScene(name, executor) {
+    this.scenes[uuidv4()] = {
+      name,
+      executor
+    };
+  }
+
+  selectScene(id) {
+    this.scenes[id].executor();
+  }
+
+
   // Returns a list of serial ports as reported by the system.
   async listPorts() {
     return await SerialPort.list();
@@ -248,6 +263,12 @@ class DMXUS extends EventEmitter {
   // Returns the device list.
   getDevices() {
     return this.devices;
+  }
+
+
+  // Returns an object of scenes
+  getScenes() {
+    return this.scenes;
   }
 
 

@@ -15,6 +15,7 @@ class Client extends Component {
       interfaceName: '',
       interfacePort: '',
       interfacePorts: [],
+      scenes: {},
       selectedDevice: null,
       showEditor: false,
       tab: 0,
@@ -45,6 +46,10 @@ class Client extends Component {
 
     this.socket.on('interfacePort', (interfacePort) => {
       this.setState({interfacePort});
+    });
+
+    this.socket.on('scenes', (scenes) => {
+      this.setState({scenes});
     });
 
     this.socket.emit('getPorts');
@@ -98,6 +103,11 @@ class Client extends Component {
   // Handles updating the group at based on the input received from a slider
   handleGroupSliderChange(e) {
     console.log(e.target.getAttribute('data-address'));
+  }
+
+  // Handles executing a selected scene
+  handleSceneSelect(sceneId) {
+    this.socket.emit('selectScene', sceneId);
   }
 
   render() {
@@ -180,6 +190,9 @@ class Client extends Component {
         {
           this.state.tab === 4 ? (
             <div className={'content-wrapper'}>
+              <div className={'scenes'}>
+                {renderScenes(this.state.scenes, this.handleSceneSelect.bind(this))}
+              </div>
             </div>
           ) : null
         }
@@ -243,6 +256,15 @@ const renderGroups = (devices, onChange) => {
 
   return uniqueGroups.map((group, index) =>
     <VerticalSlider key={index} address={group} title={group} value={0} onChange={onChange} />
+  );
+};
+
+// Accepts a universe object and renders addresses with their corresponding values
+const renderScenes = (scenes, onSelect) => {
+  return Object.keys(scenes).map(sceneId =>
+    <button className={'scene-button'} onClick={() => onSelect(sceneId)}>
+      {scenes[sceneId].name}
+    </button>
   );
 };
 
