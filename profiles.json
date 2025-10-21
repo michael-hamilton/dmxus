@@ -97,5 +97,17 @@
       "blue",
       "white"
     ]
+  },
+
+  "RGBWI": {
+    "description": "4 channel rgbw fixture with intensity",
+    "type": "rgbwi",
+    "parameters": [
+      "red",
+      "green",
+      "blue",
+      "white",
+      "intensity"
+    ]
   }
 }

@@ -13,14 +13,14 @@ d.initWebServer();
 
 
 // Add devices
-d.addDevice(1, 1, dmxus.getDeviceProfile('RGB'), 'Test Device 1', ['all', 'left', 'back']);
-d.addDevice(2, 4, dmxus.getDeviceProfile('RGB'), 'Test Device 2', ['all', 'left', 'middle', 'back']);
-d.addDevice(3, 7, dmxus.getDeviceProfile('RGB'), 'Test Device 3', ['all', 'left', 'middle', 'front']);
-d.addDevice(4, 10, dmxus.getDeviceProfile('RGB'), 'Test Device 4', ['all', 'left', 'front']);
-d.addDevice(5, 13, dmxus.getDeviceProfile('RGB'), 'Test Device 5', ['all', 'right', 'front']);
-d.addDevice(6, 16, dmxus.getDeviceProfile('RGB'), 'Test Device 6', ['all', 'right', 'middle', 'front']);
-d.addDevice(7, 19, dmxus.getDeviceProfile('RGB'), 'Test Device 7', ['all', 'right', 'middle', 'back']);
-d.addDevice(8, 22, dmxus.getDeviceProfile('RGB'), 'Test Device 8', ['all', 'right', 'back']);
+d.addDevice(1, 1, dmxus.getDeviceProfile('RGBWI'), 'Test Device 1', ['all', 'left', 'back']);
+d.addDevice(2, 6, dmxus.getDeviceProfile('RGBWI'), 'Test Device 2', ['all', 'left', 'middle', 'back']);
+d.addDevice(3, 11, dmxus.getDeviceProfile('RGBWI'), 'Test Device 3', ['all', 'left', 'middle', 'front']);
+d.addDevice(4, 16, dmxus.getDeviceProfile('RGBWI'), 'Test Device 4', ['all', 'left', 'front']);
+d.addDevice(5, 21, dmxus.getDeviceProfile('RGBWI'), 'Test Device 5', ['all', 'right', 'front']);
+d.addDevice(6, 26, dmxus.getDeviceProfile('RGBWI'), 'Test Device 6', ['all', 'right', 'middle', 'front']);
+d.addDevice(7, 31, dmxus.getDeviceProfile('RGBWI'), 'Test Device 7', ['all', 'right', 'middle', 'back']);
+d.addDevice(8, 36, dmxus.getDeviceProfile('RGBWI'), 'Test Device 8', ['all', 'right', 'back']);
 
 d.addScene('All White', () => {
   d.updateAllDevicesInGroup('all', {
@@ -254,6 +254,15 @@ d.addScene('All Off Fade', () => {
     green: 0,
     blue: 0,
   }, 2000)
+});
+
+d.addScene('All Off Slow Fade', () => {
+  d.updateAllDevicesInGroup('all', {
+    intensity: 0,
+    red: 0,
+    green: 0,
+    blue: 0,
+  }, 5000)
 });
 
 
